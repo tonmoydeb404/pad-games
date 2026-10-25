@@ -36,6 +36,17 @@ yarn-error.log*
 # vercel
 .vercel
 
+# game asset build inputs (extracted Quaternius zips, see scripts/build-animal-assets.mjs)
+/animal-pack-sources
+# Kenney Car Kit zip, see scripts/build-car-assets.mjs
+/car-kit-sources
+# Kenney Train Pack zip, see scripts/build-train-assets.mjs
+/train-pack-sources
+# Kenney City Kit zips (Suburban + Roads), see scripts/build-city-assets.mjs
+/city-pack-sources
+# Kenney Mini Dungeon + Blaster Kit zips, see scripts/build-arena-assets.mjs
+/arena-pack-sources
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

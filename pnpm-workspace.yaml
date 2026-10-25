@@ -1,3 +1,10 @@
+packages:
+  - "."
+  - "packages/*"
+  - "server"
+
 allowBuilds:
   sharp: false
   unrs-resolver: false
+  esbuild: true
+  msgpackr-extract: false
