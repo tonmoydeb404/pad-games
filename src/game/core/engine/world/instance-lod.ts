@@ -29,6 +29,8 @@ export class InstanceLod {
   private readonly entries: Entry[] = [];
   private lastX = NaN;
   private lastZ = NaN;
+  /** `?nolod` in the URL draws everything, for before/after comparisons. */
+  private readonly off = typeof location !== "undefined" && /[?&]nolod\b/.test(location.search);
 
   /** Snapshot the mesh's full instance set. Call once, after the matrices are written. */
   register(mesh: THREE.InstancedMesh): void {
@@ -54,6 +56,7 @@ export class InstanceLod {
 
   /** Reorder + recount for a new focus point (cheap early-out while it barely moves). */
   update(px: number, pz: number): void {
+    if (this.off) return;
     if (Math.hypot(px - this.lastX, pz - this.lastZ) < REFRESH) return;
     this.lastX = px;
     this.lastZ = pz;

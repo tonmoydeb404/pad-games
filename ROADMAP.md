@@ -6,7 +6,7 @@ The full spec lives in `PLAN.md`; this file tracks what is actually true of the 
 | Phase | Status |
 | --- | --- |
 | 0 — Audit & baseline | **VERIFIED COMPLETE** (2026-10-26) |
-| 1 — Performance, partitioning, streaming | IN PROGRESS (render cost cut; streaming decision below) |
+| 1 — Performance, partitioning, streaming | **VERIFIED COMPLETE** (2026-10-27) for the revised scope: render cost cut and measured; chunked streaming deferred by decision |
 | 2 — Player state, inventory, equipment | NOT STARTED |
 | 3 — Wildlife, taming, riding | NOT STARTED (animals + riding exist as prototype) |
 | 4–11 | NOT STARTED |
@@ -100,8 +100,12 @@ Visual check against the earlier screenshots: no visible change at spawn; no pop
 ### Decision on chunked streaming
 Not needed at the current 1 km² world: after culling the scene renders in a few ms and memory is ~110-190 MB. A chunk/region abstraction and stable entity IDs become worthwhile when the world grows or persistence (Phase 7) starts; they are deferred to then rather than built speculatively.
 
-### Remaining for Phase 1
-- Lazy-load deep-jungle animal models (25 MB up front) and measure load time.
-- Check pop-in at map edges and at driving speed; tune `VIEW_R` / `HIDE_DIST`.
-- Terrain mesh (231 k triangles, 340² grid) could use distance-based detail.
-- Re-baseline on a second machine / the user's gamepad session.
+### Remaining items, closed
+- **Animal assets:** the animal GLBs were mostly unused animation (the engine plays 5 clips per species and each file carried 10-14). `scripts/slim-animal-assets.mjs` (run after `build-animal-assets.mjs`, idempotent, same clip-picking rules as `animals/clips.ts`) keeps only those clips: **25.3 MB → 17.8 MB** on disk. Species are small and spawn at start, so true lazy loading would save little; it is not done. World-ready time over 3 runs after the change: **4.3-5.9 s** (was ≈7.8 s once; machine load was similar, so indicative).
+- **Pop-in:** `?nolod` draws everything, for comparison. Screenshots at three Port Marin vantage points (`?warp=road|city|crossing`, near the map edge) differ from the unculled render in 0.10-0.15 % of pixels (city, crossing) and 2.7 % (road). The diff images show only wind-swayed foliage edges and animal poses (time-dependent), no missing trees or fill. Not tested: a long fast drive recording.
+- **Terrain mesh:** 231 k triangles, ~4-7 % of the frame after culling; a tiled or LOD terrain is not worth it now.
+- **Re-baseline (this machine, production build, headless):** 59-60 FPS, 0-5 frames over 33 ms per 600; draw calls 855 / 376 / 234 and triangles 5.1 M / 4.7 M / 3.3 M (idle / sprint / drive); JS per frame 8-10 ms; heap 98-126 MB. A second machine was not available.
+
+### Known limits (supported assumptions)
+- World: one fixed 1 km² map. `VIEW_R` 460 m and `HIDE_DIST` 300 m are tuned to the current fog density (FogExp2 0.0026); change them together with the fog.
+- Chunked render streaming, region IDs and stable entity IDs are **not** built; build them when the world outgrows ~2 km or when Phase 7 starts.
