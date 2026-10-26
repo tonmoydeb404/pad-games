@@ -15,6 +15,22 @@ describe("jeep engine on Rapier (headless)", () => {
     expect(st.progress).toBeGreaterThan(0.2); // actually made progress along the trail
   });
 
+  it("never recovers on its own: overturned or wrecked stays that way until the player resets", async () => {
+    const e = await makeEngine();
+    e.v.overturnT = 10;
+    const p = e.v.pos.clone();
+    e.tickRules(1 / 60);
+    expect(e.v.overturnT).toBe(10);
+    expect(e.v.pos.distanceTo(p)).toBe(0);
+    e.damageJeep(1000);
+    expect(e.wreckT).toBeGreaterThan(0);
+    for (let i = 0; i < 60 * 30; i++) e.updateWreck();
+    expect(e.wreckT).toBeGreaterThan(0); // still wrecked after 30 s
+    e.resetVehicle();
+    expect(e.wreckT).toBe(0);
+    expect(e.jeepHealth).toBe(100);
+  });
+
   it("jump kickers launch the car and it lands on its wheels", async () => {
     const e = await makeEngine();
     const st = autopilot(e, 35, 30);
@@ -122,7 +138,7 @@ describe("jeep engine on Rapier (headless)", () => {
       for (let i = 1; i < first.length; i++) expect(first[i]).toBeGreaterThanOrEqual(first[i - 1]);
       expect(first[0]).toBeGreaterThan(0.3); // even a nudge is felt
       expect(first[first.length - 1]).toBeGreaterThan(0.9); // a hard hit is full strength
-    });
+    }, 30000); // four 14 s simulations: heavy on a busy machine
 
     it("a glancing hit rumbles too", async () => {
       const r = await crash(15, 1.3);

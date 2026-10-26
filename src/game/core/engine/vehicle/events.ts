@@ -88,8 +88,8 @@ export function saveBestLap(this: JeepEngine): void {
  * the drive never breaks.
  */
 /**
- * Chip the jeep's health. At zero the jeep is wrecked: inputs lock, smoke
- * pours out, and after a beat it recovers on the trail with partial health.
+ * Chip the jeep's health. At zero the jeep is wrecked: inputs lock and smoke
+ * pours out until the player recovers it (R / RB), which restores it on the trail.
  */
 export function damageJeep(this: JeepEngine, amount: number): void {
   if (this.wreckT > 0) return;
@@ -100,7 +100,7 @@ export function damageJeep(this: JeepEngine, amount: number): void {
     this.camState.trauma = 1;
     this.audio.thud(1.4);
     this.input.rumble(1, 900);
-    this.notify("WRECKED!");
+    this.notify("Wrecked! Press R / RB to recover");
     // fireball-ish burst over the bonnet
     const rp = this.renderPos;
     const sy = Math.sin(this.v.yaw);

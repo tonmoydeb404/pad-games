@@ -11,6 +11,7 @@
 
 import dynamic from "next/dynamic";
 import { ControlsPanel } from "./controls-panel";
+import { InventoryPanel } from "./inventory-panel";
 import { PauseOverlay } from "./pause-overlay";
 import { StartOverlay } from "./start-overlay";
 import { useJeepShell } from "./use-jeep-shell";
@@ -45,9 +46,9 @@ export function JeepShell() {
         />
       )}
 
-      {s.started && s.paused && (
-        <PauseOverlay overlayRef={s.pauseOverlayRef} nav={s.nav} />
-      )}
+      {s.started && s.paused && !s.inventoryOpen && <PauseOverlay overlayRef={s.pauseOverlayRef} nav={s.nav} />}
+
+      {s.inventoryOpen && s.engine && <InventoryPanel engine={s.engine} />}
 
       {s.controlsOpen && <ControlsPanel onClose={s.closeControls} />}
     </div>

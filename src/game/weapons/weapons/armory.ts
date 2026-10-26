@@ -12,6 +12,8 @@ export class Armory {
   cooldown = 0;
   /** > 0 while reloading: seconds left. */
   reloadLeft = 0;
+  constructor(private readonly owned: (slot: number) => boolean = () => true) {}
+
   private slots: Slot[] = GUNS.map((g) => ({ mag: g.magSize, reserve: g.reserveMags * g.magSize }));
 
   /** The equipped gun, or null with fists out. */
@@ -41,6 +43,7 @@ export class Armory {
   /** Switch to `slot` (0 = fists). Returns true if the selection changed. */
   select(slot: number): boolean {
     if (slot < 0 || slot > GUNS.length || slot === this.selected) return false;
+    if (slot > 0 && !this.owned(slot)) return false; // you cannot draw what you do not carry
     this.selected = slot;
     this.reloadLeft = 0; // a swap cancels a reload in progress
     this.cooldown = slot > 0 ? SWAP_SECONDS : 0;
@@ -50,7 +53,7 @@ export class Armory {
   /** Next / previous in the cycle fists → guns → fists. */
   cycle(dir: 1 | -1 = 1): void {
     const n = GUNS.length + 1;
-    this.select((this.selected + dir + n) % n);
+    for (let i = 1; i <= n; i++) if (this.select((this.selected + dir * i + n * i) % n)) return;
   }
 
   update(dt: number): void {

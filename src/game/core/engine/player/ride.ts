@@ -1,6 +1,7 @@
 /** Mounting, dismounting and calling animals. */
 import type { RideHandle, RideInfo } from "../../../world/animals";
 import { clamp } from "../../noise";
+import { heal } from "../../../player/state";
 import { RIDE_REACH, ENTER_DIST } from "../config/foot-constants";
 import type { JeepEngine } from "../jeep-engine";
 
@@ -106,7 +107,7 @@ export function mountSpecial(this: JeepEngine): void {
   if (r.shake > 0.4) this.audio.thud(r.shake);
   this.camState.trauma = Math.min(1, this.camState.trauma + r.shake);
   this.input.rumble(clamp(0.25 + r.shake, 0.25, 1), 160);
-  if (r.heal > 0) this.foot.health = Math.min(100, this.foot.health + r.heal);
+  if (r.heal > 0) heal(this.player.vitals, r.heal);
   this.notify(r.text);
 }
 

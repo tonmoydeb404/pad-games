@@ -52,10 +52,12 @@ export function updatePrompt(this: JeepEngine): void {
   const key = this.input.connected ? "Y" : "F";
   const ride = this.nearRide;
   const rideFirst = !!ride && this.ridePreferred();
-  const show = this.onFoot && !this.paused && (!!this.riding || rideFirst || this.nearCar);
+  const ko = this.foot.downT > 0;
+  const show = this.onFoot && !this.paused && (ko || !!this.riding || rideFirst || this.nearCar);
   pr.hidden = !show;
   if (!show) return;
-  if (this.riding) pr.textContent = `${key} — dismount`;
+  if (ko) pr.textContent = `${key} — get up`;
+  else if (this.riding) pr.textContent = `${key} — dismount`;
   else if (rideFirst && ride) pr.textContent = `${key} — ride the ${ride.name.replace(/_/g, " ")}`;
   else pr.textContent = `${key} — enter the jeep`;
 }

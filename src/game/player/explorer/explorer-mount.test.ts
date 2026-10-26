@@ -83,10 +83,10 @@ describe("on-foot explorer (mounts)", () => {
     e.updateExplorer(1 / 60, snap({ moveY: 1, jump: true }));
     e.updateExplorer(1 / 60, snap({ moveY: 1, jump: true })); // held — no second jump
     expect(calls.filter((c) => c === "jump")).toHaveLength(1);
-    e.foot.health = 50;
+    e.player.vitals.health = 50;
     e.mountSpecial();
     expect(calls).toContain("special");
-    expect(e.foot.health).toBe(75); // the special's heal reached the rider
+    expect(e.player.vitals.health).toBe(75); // the special's heal reached the rider
     expect(calls).toContain("neigh");
 
     // horn key = the animal's own call

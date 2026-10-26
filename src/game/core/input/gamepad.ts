@@ -96,7 +96,7 @@ export function applyGamepad(
   if (wasPressed(gp, 1, prev)) actions.push("kick", "special");
   if (wasPressed(gp, 11, prev)) actions.push("roll", "special");
   if (wasPressed(gp, 5, prev)) actions.push("reset");
-  if (wasPressed(gp, 8, prev)) actions.push("mute");
+  if (wasPressed(gp, 8, prev)) actions.push("inventory");
   if (wasPressed(gp, 9, prev)) actions.push("pause");
   // snapshot of every button for next-frame edge detection
   for (let i = 0; i < gp.buttons.length; i++) {

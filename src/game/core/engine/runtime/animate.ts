@@ -30,7 +30,7 @@ export function animate(this: JeepEngine, now: number): void {
   this.v.brake = locked ? 0 : snap.brake;
   this.v.steerTarget = locked ? 0 : snap.steer;
   this.v.handbrake = locked ? false : snap.handbrake;
-  this.updateWreck(dt);
+  this.updateWreck();
   this.applyStickLook(snap, dt);
   const stickLooking = Math.abs(snap.lookX) > 0.1 || Math.abs(snap.lookY) > 0.1;
   this.handleActions();
@@ -42,10 +42,9 @@ export function animate(this: JeepEngine, now: number): void {
   this.profiler?.end();
 }
 
-/** Wrecked: heavy smoke while dead in the water, then recover at 65%. */
-export function updateWreck(this: JeepEngine, dt: number): void {
+/** Wrecked: the jeep smokes and stays disabled until the player recovers it (R / RB). */
+export function updateWreck(this: JeepEngine): void {
   if (this.wreckT > 0) {
-    this.wreckT -= dt;
     if (Math.random() < 0.6) {
       const sy = Math.sin(this.v.yaw);
       const cy = Math.cos(this.v.yaw);
@@ -57,11 +56,6 @@ export function updateWreck(this: JeepEngine, dt: number): void {
         Math.random() < 0.3 ? "#ff6a2c" : "#222222",
         0.35, 1.6, 1.5,
       );
-    }
-    if (this.wreckT <= 0) {
-      this.resetVehicle();
-      this.jeepHealth = 65;
-      this.notify("Recovered — 65% health");
     }
   }
 }

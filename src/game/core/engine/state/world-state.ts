@@ -23,12 +23,14 @@ export class WorldState {
   kills = 0;
   /** Jeep health 0..100 — animal attacks and heavy rams chip it; slow regen. */
   jeepHealth = 100;
-  /** Wrecked countdown: jeep disabled until it recovers. */
+  /** > 0 while the jeep is wrecked: disabled until the player recovers it (resetVehicle clears it). */
   wreckT = 0;
   /** Slow, shell-facing callbacks. Assign any time before/while running. */
   onProgress?: (pct: number, label: string) => void;
   onReady?: () => void;
-  onPauseChange?: (paused: boolean) => void;
+  onPauseChange?: (paused: boolean, view: "pause" | "inventory") => void;
+  /** Which menu the current pause shows. */
+  pausedView: "pause" | "inventory" = "pause";
   onPadChange?: (connected: boolean, id: string) => void;
   // three core
   /** Distance culling for instanced scenery (see world/instance-lod.ts). */

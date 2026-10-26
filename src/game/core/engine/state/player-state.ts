@@ -3,6 +3,7 @@ import * as THREE from "three";
 import type { JungleCharacter } from "../../../player/character";
 import type { GunModel } from "../../../weapons/gun-models";
 import { Armory } from "../../../weapons/weapons";
+import { createPlayer, ownedGunSlots } from "../../../player/state";
 import type { RideHandle, Saddle } from "../../../world/animals";
 import { MELEE } from "../config/foot-constants";
 import { FeelState } from "./feel-state";
@@ -13,6 +14,8 @@ export class PlayerState extends FeelState {
   explorer: JungleCharacter | null = null;
   /** True while walking the jungle; false while driving. */
   onFoot = false;
+  /** The player's survival state (vitals, inventory, held item). The one source of truth for the HUD, combat and menus. */
+  readonly player = createPlayer();
   readonly foot = {
     pos: new THREE.Vector3(),
     vx: 0,
@@ -23,13 +26,6 @@ export class PlayerState extends FeelState {
     gait: 0,
     /** smoothed gait for the animation blender */
     gaitS: 0,
-    health: 100,
-    stamina: 100,
-    /** exhausted: can't sprint until stamina recovers */
-    winded: false,
-    /** seconds before stamina / health start recovering */
-    staminaRest: 0,
-    healthRest: 0,
     crouch: false,
     crouchK: 0,
     /** current procedural action + its progress */
@@ -61,7 +57,8 @@ export class PlayerState extends FeelState {
   /** Level of the jump input last frame (edge detection). */
   prevJump = false;
   // --- guns -----------------------------------------------------------------
-  readonly armory = new Armory();
+  /** Blasters you may draw: only those you carry. */
+  readonly armory = new Armory((slot) => ownedGunSlots(this.player).has(slot));
   gunModels: (GunModel | null)[] = [];
   /** Model currently in the explorer's hand (selection index). */
   heldGun = 0;

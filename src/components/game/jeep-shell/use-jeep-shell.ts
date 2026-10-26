@@ -28,6 +28,8 @@ export function useJeepShell() {
   const [ready, setReady] = useState(false);
   const [started, setStarted] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [engine, setEngine] = useState<JeepEngine | null>(null);
+  const [view, setView] = useState<"pause" | "inventory">("pause");
   const [progress, setProgress] = useState({ pct: 0, label: "Loading 3D engine & terrain assets…" });
   const [quality, setQuality] = useState<JeepQuality>("high");
   const [padConnected, setPadConnected] = useState(false);
@@ -52,6 +54,7 @@ export function useJeepShell() {
 
   const onEngine = useCallback((engine: JeepEngine) => {
     engineRef.current = engine;
+    setEngine(engine);
     void engine.setSkin(CHARACTERS[charIdxRef.current].id);
   }, []);
   const onProgress = useCallback((pct: number, label: string) => setProgress({ pct, label }), []);
@@ -59,8 +62,9 @@ export function useJeepShell() {
     setReady(true);
     setFocusIdx(0); // land on Play
   }, []);
-  const onPauseChange = useCallback((p: boolean) => {
+  const onPauseChange = useCallback((p: boolean, v: "pause" | "inventory") => {
     setPaused(p);
+    setView(v);
     setFocusIdx(0);
     if (!p) setControlsOpen(false);
   }, []);
@@ -125,7 +129,9 @@ export function useJeepShell() {
 
   const clampedIdx = Math.min(focusIdx, items.length - 1);
   const overlayVisible = !started || paused;
-  const menuActive = overlayVisible && !controlsOpen;
+  // the inventory screen runs its own navigation; the title/pause menu is idle while it is open
+  const inventoryOpen = started && paused && view === "inventory";
+  const menuActive = overlayVisible && !controlsOpen && !inventoryOpen;
 
   const step = useCallback(
     (dir: 1 | -1) =>
@@ -165,7 +171,7 @@ export function useJeepShell() {
     [controlsOpen, items, clampedIdx, step, activate, paused],
   );
 
-  useGamepadMenu(overlayVisible, onMenuAction);
+  useGamepadMenu(overlayVisible && !inventoryOpen, onMenuAction);
 
   // Keyboard: arrows move/adjust (Enter/Space click the focused button natively).
   useEffect(() => {
@@ -204,6 +210,8 @@ export function useJeepShell() {
     padConnected,
     charIdx,
     nav,
+    inventoryOpen,
+    engine,
     controlsOpen,
     closeControls: () => setControlsOpen(false),
     engineCallbacks: { onEngine, onProgress, onReady, onPauseChange, onPadChange },

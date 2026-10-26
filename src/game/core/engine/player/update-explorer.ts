@@ -22,13 +22,9 @@ export function updateExplorer(this: JeepEngine, dt: number, snap: JeepInputSnap
   // ---- timers -----------------------------------------------------------
   f.comboT = Math.max(0, f.comboT - dt);
   f.invulnT = Math.max(0, f.invulnT - dt);
-  f.healthRest = Math.max(0, f.healthRest - dt);
-  if (f.healthRest <= 0 && !KO && f.health < 100) f.health = Math.min(100, f.health + 3 * dt);
-  if (KO) {
-    f.downT -= dt;
-    f.downK = Math.min(1, f.downK + dt * 4);
-    if (f.downT <= 0) this.recoverFromKnockout();
-  } else f.downK = Math.max(0, f.downK - dt * 3);
+  // knocked out: stays down until the player gets up (see handleActions); health regen is in tickVitals
+  if (KO) f.downK = Math.min(1, f.downK + dt * 4);
+  else f.downK = Math.max(0, f.downK - dt * 3);
 
   // ---- action timeline (punch / kick / roll) ----------------------------
   if (f.act) {
@@ -69,7 +65,7 @@ export function updateExplorer(this: JeepEngine, dt: number, snap: JeepInputSnap
   // with a gun out the right trigger fires — only Shift / L3 sprint, and never while aiming
   const sprintKey = gunOut ? snap.sprintHard && !aiming : snap.sprint;
   const sprinting =
-    sprintKey && mag > 0.5 && !f.crouch && !f.winded && f.act !== "roll" && !KO;
+    sprintKey && mag > 0.5 && !f.crouch && !this.player.vitals.winded && f.act !== "roll" && !KO;
   let top =
     mag < 0.55
       ? FOOT_WALK * (mag / 0.55)

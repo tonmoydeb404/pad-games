@@ -7,7 +7,7 @@
  *   Left stick X / dpad ← →         steer  B (1)        handbrake
  *   LB (4) · dpad ↑  cycle camera         dpad ↓        headlights
  *   Y (3)            enter / exit vehicle  X (2)         horn
- *   RB (5)           reset vehicle         Back (8)      mute · Start (9) pause
+ *   RB (5)           reset vehicle         Back (8)      inventory · Start (9) pause
  *   Right stick      look / orbit camera
  *
  * On foot (GTA-style):
@@ -75,4 +75,5 @@ export type JeepAction =
   | "roll"
   | "reset"
   | "pause"
-  | "mute";
+  | "mute"
+  | "inventory";

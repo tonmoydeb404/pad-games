@@ -47,6 +47,7 @@ import * as runtimeAnimate from "./runtime/animate";
 import * as runtimeFrameActions from "./runtime/frame-actions";
 import * as runtimeFrameSteps from "./runtime/frame-steps";
 import * as runtimeFrameRender from "./runtime/frame-render";
+import * as playerInventoryActions from "./player/inventory-actions";
 import * as runtimeHandlers from "./runtime/handlers";
 import * as runtimeTitle from "./runtime/title";
 import * as worldInitWorld from "./world/init-world";
@@ -101,6 +102,7 @@ export const ENGINE_METHODS = {
   ...runtimeFrameActions,
   ...runtimeFrameSteps,
   ...runtimeFrameRender,
+  ...playerInventoryActions,
   ...runtimeHandlers,
   ...runtimeTitle,
   ...worldInitWorld,

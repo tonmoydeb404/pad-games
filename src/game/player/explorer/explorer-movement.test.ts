@@ -131,16 +131,17 @@ describe("on-foot explorer (movement)", () => {
   it("strafes with moveX and drains stamina only while sprinting", async () => {
     const { e } = await walkingEngine();
     const f = e.foot;
+    const v = e.player.vitals;
     for (let i = 0; i < 60; i++) e.updateExplorer(1 / 60, snap({ moveY: 1 }));
-    expect(f.stamina).toBe(100);
+    expect(v.stamina).toBe(100);
     for (let i = 0; i < 120; i++) e.updateExplorer(1 / 60, snap({ moveY: 1, sprint: true }));
-    expect(f.stamina).toBeLessThan(80);
+    expect(v.stamina).toBeLessThan(80);
     // exhaust it: sprint locks out (winded) until stamina recovers
     let windedSeen = false;
     let settledWinded = Infinity;
     for (let i = 0; i < 900; i++) {
       e.updateExplorer(1 / 60, snap({ moveY: 1, sprint: true }));
-      if (f.winded) {
+      if (v.winded) {
         windedSeen = true;
         settledWinded = Math.min(settledWinded, Math.hypot(f.vx, f.vz));
       }

@@ -7,7 +7,7 @@ The full spec lives in `PLAN.md`; this file tracks what is actually true of the 
 | --- | --- |
 | 0 — Audit & baseline | **VERIFIED COMPLETE** (2026-10-26) |
 | 1 — Performance, partitioning, streaming | **VERIFIED COMPLETE** (2026-10-27) for the revised scope: render cost cut and measured; chunked streaming deferred by decision |
-| 2 — Player state, inventory, equipment | NOT STARTED |
+| 2 — Player state, inventory, equipment | IN PROGRESS (core + inventory screen implemented — needs gamepad/hardware testing) |
 | 3 — Wildlife, taming, riding | NOT STARTED (animals + riding exist as prototype) |
 | 4–11 | NOT STARTED |
 
@@ -109,3 +109,22 @@ Not needed at the current 1 km² world: after culling the scene renders in a few
 ### Known limits (supported assumptions)
 - World: one fixed 1 km² map. `VIEW_R` 460 m and `HIDE_DIST` 300 m are tuned to the current fog density (FogExp2 0.0026); change them together with the fog.
 - Chunked render streaming, region IDs and stable entity IDs are **not** built; build them when the world outgrows ~2 km or when Phase 7 starts.
+
+## Phase 2 — progress
+
+### Done
+- **Player model** (`src/game/player/state/`, pure, no Three/React): `PlayerModel` = id, vitals, inventory, held item, flags; `serializePlayer` / `restorePlayer` (versioned, validates everything before applying; corrupt data throws and applies nothing).
+- **Vitals**: health, armor, stamina with one set of rules. All damage goes through `applyDamage(type)` (armor soaks 60 % except falls, death fires once), healing through `heal`, stamina through `tickVitals` / `spendStamina`; all rates per second (frame-rate independent, tested). Replaces the loose `foot.health / stamina / winded` fields, so HUD, combat and menus read one source.
+- **Items and inventory**: data-driven `ITEM_DEFS` (resources, consumables, tools, one weapon item per gun) and a slot `Inventory` (stacking, atomic remove, split, merge, swap, `transfer` between inventories, validation, serialisation). Invalid ids and quantities throw; "full" and "not enough" are normal results.
+- **Equipment**: the Armory only draws blasters the player carries; cycling skips the rest; `held` follows the Armory. Starter kit = all five blasters (as before) + 3 bandages.
+- **Inventory screen**: `I` or Back opens it (game pauses), grid + detail pane, Use / Equip / Holster / Discard, keyboard, mouse and gamepad (d-pad, A, B). Closing: `I`, Esc, B.
+- **Manual recovery** (requested): the jeep never recovers by itself. Overturned or wrecked, it waits for `R` / RB. A knocked-out player stays down until they press `F` / `Y` (revive at 60 % health beside the jeep).
+- Tests: 176 pass (+53: items, inventory, vitals, player model, armory ownership, manual recovery).
+
+### Not done yet in Phase 2
+- Armor cannot be found or equipped (rules exist and are tested, no source in the world yet).
+- Fall damage and other hazards (the type exists).
+- Consumable hotkeys / quick-use; discard destroys the item (no world pickups until Phase 4).
+- Damage and low-health feedback beyond the existing thud, rumble and camera kick (no screen vignette or low-health alert yet).
+- Hunger (Phase 4/5), semantic input-action layer beyond the existing `JeepAction` queue, storage containers (Phase 5).
+- Gamepad navigation of the inventory is untested on real hardware.

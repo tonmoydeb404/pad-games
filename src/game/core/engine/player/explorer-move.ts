@@ -1,6 +1,7 @@
 /** Explorer kinematics: stamina, velocity, jump, gravity, ground follow and push-out. */
 import type { JeepInputSnapshot } from "../../input";
-import { STAMINA_DRAIN, STAMINA_REGEN, ROLL_SPEED, FOOT_JUMP_V, FOOT_ACCEL_RATE, FOOT_BRAKE_RATE, PLAYER_RADIUS, FOOT_SKIN } from "../config/foot-constants";
+import { tickVitals } from "../../../player/state";
+import { ROLL_SPEED, FOOT_JUMP_V, FOOT_ACCEL_RATE, FOOT_BRAKE_RATE, PLAYER_RADIUS, FOOT_SKIN } from "../config/foot-constants";
 import { BOUND, GRAVITY } from "../config/world-constants";
 import type { JeepEngine } from "../jeep-engine";
 import type { FootIntent } from "./explorer-types";
@@ -10,22 +11,9 @@ export function moveExplorer(this: JeepEngine, dt: number, snap: JeepInputSnapsh
   const ex = this.explorer!;
   const f = this.foot;
   const { KO, mx, mz, top, sprinting } = it;
-  // ---- stamina ----------------------------------------------------------
+  // ---- stamina + health regeneration (shared vitals rules) ----------------
   const planar = Math.hypot(f.vx, f.vz);
-  if (sprinting && planar > 3) {
-    f.stamina = Math.max(0, f.stamina - STAMINA_DRAIN * dt);
-    f.staminaRest = 0.9;
-    if (f.stamina <= 0) {
-      f.winded = true;
-      this.notify("Out of breath");
-    }
-  } else {
-    f.staminaRest = Math.max(0, f.staminaRest - dt);
-    if (f.staminaRest <= 0) {
-      f.stamina = Math.min(100, f.stamina + STAMINA_REGEN * (planar < 1 ? 1.5 : 1) * dt);
-      if (f.winded && f.stamina >= 25) f.winded = false;
-    }
-  }
+  if (tickVitals(this.player.vitals, dt, { sprinting: sprinting && planar > 3, still: planar < 1 })) this.notify("Out of breath");
 
   // ---- velocity ---------------------------------------------------------
   if (f.act === "roll") {

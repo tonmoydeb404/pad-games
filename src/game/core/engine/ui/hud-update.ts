@@ -50,12 +50,13 @@ export function updateUI(this: JeepEngine, dt: number): void {
   if (this.el.spd) this.el.spd.textContent = String(Math.round(kmh));
   this.root?.querySelector<HTMLElement>(".jj-hud")?.setAttribute("data-mode", foot ? "foot" : "car");
   if (this.el.sta) {
-    this.el.sta.style.width = `${this.foot.stamina}%`;
-    this.el.sta.style.background = this.foot.winded ? "#c4432c" : "";
+    const vit = this.player.vitals;
+    this.el.sta.style.width = `${(vit.stamina / vit.cfg.maxStamina) * 100}%`;
+    this.el.sta.style.background = vit.winded ? "#c4432c" : "";
   }
   // HP bar: full width = healthy
   if (this.el.hp) {
-    const hp = foot ? this.foot.health : this.jeepHealth;
+    const hp = foot ? (this.player.vitals.health / this.player.vitals.cfg.maxHealth) * 100 : this.jeepHealth;
     this.el.hp.style.width = `${hp}%`;
     this.el.hp.style.background = hp > 30 ? "" : "#c4432c"; // bone, signal red when low
   }
@@ -63,7 +64,11 @@ export function updateUI(this: JeepEngine, dt: number): void {
   let deg = ((-yaw * 180) / Math.PI + 180) % 360;
   if (deg < 0) deg += 360;
   if (this.el.compass) this.el.compass.textContent = `${DIRS[Math.round(deg / 45) % 8]} ${String(Math.round(deg)).padStart(3, "0")}°`;
-  if (this.el.warn) this.el.warn.classList.toggle("show", !foot && v.overturnT > 1.4);
+  if (this.el.warn) {
+    const wrecked = this.wreckT > 0;
+    this.el.warn.textContent = wrecked ? "Jeep wrecked. Press RB / R to recover" : "Jeep overturned. Press RB / R to recover";
+    this.el.warn.classList.toggle("show", !foot && (wrecked || v.overturnT > 1.4));
+  }
   this.updateWeaponHud();
   this.updatePrompt();
 }

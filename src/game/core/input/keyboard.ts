@@ -11,7 +11,10 @@ export const PREVENT_KEYS = new Set([
   "Space",
 ]);
 
-/** Edge-triggered actions fired by a (lower-cased) key going down. */
+/**
+ * Edge-triggered actions fired by a (lower-cased) key going down. "i" (inventory) is not here on purpose:
+ * the engine handles it in onPauseKey so it also works while paused, and a queued action would reopen the menu.
+ */
 export function keyActions(k: string): JeepAction[] {
   switch (k) {
     case "c":

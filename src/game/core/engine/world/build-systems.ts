@@ -66,7 +66,7 @@ export function trainRam(this: JeepEngine, closing: number, nx: number, nz: numb
   this.camState.trauma = 1;
   if (this.onFoot) {
     // a train vs a person: huge knockback, likely a knockout
-    this.hurtPlayer(Math.round(clamp(closing * 1.7, 30, 60)), nx, nz);
+    this.hurtPlayer(Math.round(clamp(closing * 1.7, 30, 60)), nx, nz, "train");
     this.foot.vx += nx * 13;
     this.foot.vz += nz * 13;
   } else {

@@ -1,5 +1,6 @@
 /** Punch, kick, roll, melee resolution and damage taken. */
 import { clamp } from "../../noise";
+import { applyDamage, revive, spendStamina, type DamageType } from "../../../player/state";
 import { MELEE, ROLL_DUR, ROLL_COST } from "../config/foot-constants";
 import type { JeepEngine } from "../jeep-engine";
 
@@ -11,7 +12,7 @@ export function startAction(this: JeepEngine, kind: "punch" | "kick" | "roll"): 
   if (f.act === "roll") return; // committed
   if (kind !== "roll" && this.armory.gun) return; // hands are full — holster to fight bare-fisted
   if (kind === "roll") {
-    if (!f.grounded || f.stamina < ROLL_COST * 0.5) return;
+    if (!f.grounded || this.player.vitals.stamina < ROLL_COST * 0.5) return;
     const yaw = this.footCam.yaw;
     const mx = this.lastMove.x;
     const my = this.lastMove.y;
@@ -33,8 +34,7 @@ export function startAction(this: JeepEngine, kind: "punch" | "kick" | "roll"): 
     f.queued = null;
     f.crouch = false;
     f.invulnT = ROLL_DUR * 0.75;
-    f.stamina = Math.max(0, f.stamina - ROLL_COST);
-    f.staminaRest = 0.9;
+    spendStamina(this.player.vitals, ROLL_COST, 0.9);
     this.audio.step("dirt", 1);
     return;
   }
@@ -57,8 +57,7 @@ export function startAction(this: JeepEngine, kind: "punch" | "kick" | "roll"): 
   f.hitDone = false;
   f.comboT = 0.9;
   f.crouch = false;
-  f.stamina = Math.max(0, f.stamina - spec.cost);
-  f.staminaRest = 0.7;
+  spendStamina(this.player.vitals, spec.cost, 0.7);
   // soft lock: snap to the nearest animal in front so swings connect
   const dirX = -Math.sin(f.yaw);
   const dirZ = -Math.cos(f.yaw);
@@ -88,12 +87,11 @@ export function resolveMelee(this: JeepEngine): void {
   this.slowmoT = Math.max(this.slowmoT, r.kills ? 0.1 : 0.04); // hit-stop
 }
 
-/** An animal bit the player. `n` points away from the attacker. */
-export function hurtPlayer(this: JeepEngine, dmg: number, nx: number, nz: number): void {
+/** The player took a hit (animal bite by default). `n` points away from the attacker. All damage goes through the shared vitals rules. */
+export function hurtPlayer(this: JeepEngine, dmg: number, nx: number, nz: number, type: DamageType = "animal"): void {
   const f = this.foot;
   if (!this.onFoot || f.downT > 0 || f.invulnT > 0 || dmg <= 0) return;
-  f.health = Math.max(0, f.health - dmg);
-  f.healthRest = 7;
+  const hit = applyDamage(this.player.vitals, dmg, type);
   f.vx += nx * 6.5;
   f.vz += nz * 6.5;
   if (f.act && f.act !== "roll") f.act = null; // staggered out of the swing
@@ -102,24 +100,21 @@ export function hurtPlayer(this: JeepEngine, dmg: number, nx: number, nz: number
   this.camState.trauma = Math.min(1, this.camState.trauma + 0.35);
   this.audio.thud(0.6);
   this.input.rumble(0.7, 220);
-  if (f.health <= 0) {
+  if (hit.died) {
     this.mouseFire = this.mouseAim = false;
     if (this.riding) this.dismount(true);
-    f.downT = 3.2;
+    f.downT = 1; // knocked out until the player gets up (F / Y)
     f.act = null;
     f.crouch = false;
     this.camState.trauma = 1;
-    this.notify("Knocked out!");
+    this.notify("Knocked out! Press F / Y to get up");
   }
 }
 
-/** Back on your feet at the car after a knockout. */
+/** Back on your feet at the car after a knockout. Manual: the player chooses when. */
 export function recoverFromKnockout(this: JeepEngine): void {
   this.foot.downT = 0;
-  this.foot.health = 60;
-  this.foot.stamina = 100;
-  this.foot.winded = false;
-  this.foot.healthRest = 4;
+  revive(this.player.vitals, 0.6);
   this.spawnExplorerBesideCar();
-  this.notify("You came to beside the jeep — 60% health");
+  this.notify("You got up beside the jeep — 60% health");
 }

@@ -14,7 +14,7 @@ export interface JeepCanvasCallbacks {
   onEngine?: (engine: JeepEngine) => void;
   onProgress?: (pct: number, label: string) => void;
   onReady?: () => void;
-  onPauseChange?: (paused: boolean) => void;
+  onPauseChange?: (paused: boolean, view: "pause" | "inventory") => void;
   onPadChange?: (connected: boolean, id: string) => void;
 }
 
@@ -37,7 +37,7 @@ export function JeepCanvas({ quality, ...callbacks }: JeepCanvasCallbacks & { qu
         engine = new JeepEngine({ container: containerRef.current, quality });
         engine.onProgress = (pct, label) => cbRef.current.onProgress?.(pct, label);
         engine.onReady = () => cbRef.current.onReady?.();
-        engine.onPauseChange = (paused) => cbRef.current.onPauseChange?.(paused);
+        engine.onPauseChange = (paused, view) => cbRef.current.onPauseChange?.(paused, view);
         engine.onPadChange = (c, id) => cbRef.current.onPadChange?.(c, id);
         engine.attach();
         await engine.build();

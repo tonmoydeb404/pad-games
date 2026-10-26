@@ -111,4 +111,18 @@ describe("Armory", () => {
     // the sniper doesn't lose punch at distance
     expect(damageAt(GUNS[4], 200)).toBe(GUNS[4].damage);
   });
+
+  it("only draws guns you carry, and cycling skips the rest", () => {
+    const carried = new Set([1, 4]);
+    const a = new Armory((slot) => carried.has(slot));
+    expect(a.select(2)).toBe(false);
+    expect(a.selected).toBe(0);
+    expect(a.select(4)).toBe(true);
+    a.cycle(1); // 4 → (5 not owned) → fists
+    expect(a.selected).toBe(0);
+    a.cycle(1);
+    expect(a.selected).toBe(1);
+    a.cycle(-1);
+    expect(a.selected).toBe(0);
+  });
 });

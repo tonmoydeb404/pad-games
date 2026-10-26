@@ -1,11 +1,15 @@
 /** Weapon switching, holstering, reloading and the weapon HUD. */
 import { clamp } from "../../noise";
+import { getItemDef, weaponItemId } from "../../../player/state";
 import { FOOT_RUN } from "../config/foot-constants";
 import type { JeepEngine } from "../jeep-engine";
 
 /** Put the right model (or none) in the explorer's hand for the current selection. */
 export function syncHeldGun(this: JeepEngine): void {
   const sel = this.armory.selected;
+  // the player model records what is in hand (guns only until tools exist)
+  const held = this.player.held;
+  if (!held || getItemDef(held).category === "weapon") this.player.held = sel > 0 ? weaponItemId(sel) : null;
   if (sel === this.heldGun) return;
   this.heldGun = sel;
   this.explorer?.setGun(sel > 0 ? (this.gunModels[sel - 1] ?? null) : null);

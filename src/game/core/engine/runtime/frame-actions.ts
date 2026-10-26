@@ -5,6 +5,11 @@ import type { JeepEngine } from "../jeep-engine";
 /** Drains the input action queue and performs each action for the current mode. */
 export function handleActions(this: JeepEngine): void {
   for (const action of this.input.consumeActions()) {
+    // knocked out: the enter / reset buttons get you back on your feet
+    if (this.onFoot && this.foot.downT > 0) {
+      if (action === "enter" || action === "reset") this.recoverFromKnockout();
+      continue;
+    }
     switch (action) {
       case "camera":
         if (this.onFoot) {
@@ -59,6 +64,7 @@ export function handleActions(this: JeepEngine): void {
         else this.resetVehicle();
         break;
       case "pause": this.pause(); break;
+      case "inventory": this.pause("inventory"); break;
       case "mute": {
         const m = this.audio.toggle();
         this.notify(m ? "Audio muted" : "Audio on");

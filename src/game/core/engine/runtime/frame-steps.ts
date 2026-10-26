@@ -1,11 +1,11 @@
-/** Per-frame simulation phases: countdown/recovery rules, fixed-step vehicle, wildlife and trains. */
+/** Per-frame simulation phases: countdown rules, fixed-step vehicle, wildlife and trains. */
 import { clamp } from "../../noise";
 import type { JeepInputSnapshot } from "../../input";
 import { PLAYER_RADIUS } from "../config/foot-constants";
 import { FIXED_DT, MAX_SUBSTEPS } from "../config/world-constants";
 import type { JeepEngine } from "../jeep-engine";
 
-/** Countdown 3-2-1-GO and auto-recovery after sitting overturned. */
+/** Countdown 3-2-1-GO. An overturned jeep stays put until the player recovers it (RB / R). */
 export function tickRules(this: JeepEngine, dt: number): void {
   // ---- countdown 3-2-1-GO (drive inputs locked) ----
   if (this.countdownT > 0) {
@@ -14,12 +14,6 @@ export function tickRules(this: JeepEngine, dt: number): void {
     const after = Math.ceil(Math.max(0, this.countdownT));
     if (after < before) this.showCount(after);
     if (this.countdownT <= 0) this.lapStartT = this.time;
-  }
-
-  // auto-recover after sitting overturned (the warn shows at 1.4s)
-  if (this.v.overturnT > 3.2) {
-    this.resetVehicle();
-    this.notify("Auto-recovered");
   }
 }
 

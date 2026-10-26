@@ -43,28 +43,33 @@ describe("on-foot explorer (combat)", () => {
     e.startAction("roll");
     expect(f.act).toBe("roll");
     expect(f.invulnT).toBeGreaterThan(0.3);
-    const s0 = f.stamina;
+    const s0 = e.player.vitals.stamina;
     e.hurtPlayer(20, 1, 0);
-    expect(f.health).toBe(100); // i-frames
+    expect(e.player.vitals.health).toBe(100); // i-frames
     for (let i = 0; i < 45; i++) e.updateExplorer(1 / 60, snap());
     expect(distXZ(f.pos, a)).toBeGreaterThan(3);
-    expect(f.stamina).toBeLessThan(s0 + 1);
+    expect(e.player.vitals.stamina).toBeLessThan(s0 + 1);
     expect(f.act).toBeNull();
   });
 
-  it("animals can hurt the explorer; a knockout wakes you at the jeep", async () => {
+  it("animals can hurt the explorer; a knockout keeps you down until you get up at the jeep", async () => {
     const { e } = await walkingEngine();
     const f = e.foot;
     e.hurtPlayer(30, 1, 0);
-    expect(f.health).toBe(70);
+    expect(e.player.vitals.health).toBe(70);
     expect(f.vx).toBeGreaterThan(3); // knocked back
     f.invulnT = 0;
     e.hurtPlayer(500, 1, 0);
-    expect(f.health).toBe(0);
+    expect(e.player.vitals.health).toBe(0);
+    expect(e.player.vitals.dead).toBe(true);
     expect(f.downT).toBeGreaterThan(0);
-    for (let i = 0; i < 60 * 4; i++) e.updateExplorer(1 / 60, snap());
-    expect(f.downT).toBeLessThanOrEqual(0);
-    expect(f.health).toBe(60);
+    for (let i = 0; i < 60 * 10; i++) e.updateExplorer(1 / 60, snap());
+    expect(f.downT).toBeGreaterThan(0); // no auto-recover: still down after ten seconds
+    (e.input as unknown as { consumeActions: () => string[] }).consumeActions = () => ["enter"];
+    e.handleActions();
+    expect(f.downT).toBe(0);
+    expect(e.player.vitals.dead).toBe(false);
+    expect(e.player.vitals.health).toBe(60);
     expect(distXZ(f.pos, e.v.pos)).toBeLessThan(3.7);
   });
 

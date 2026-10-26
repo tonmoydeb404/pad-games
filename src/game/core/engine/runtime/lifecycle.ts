@@ -29,13 +29,14 @@ export function togglePause(this: JeepEngine): void {
   else this.pause();
 }
 
-export function pause(this: JeepEngine): void {
+export function pause(this: JeepEngine, view: "pause" | "inventory" = "pause"): void {
   if (!this.started || this.paused || this.destroyed) return;
   this.paused = true;
+  this.pausedView = view;
   this.mouseFire = this.mouseAim = false;
   if (document.pointerLockElement) document.exitPointerLock();
   this.audio.suspend();
-  this.onPauseChange?.(true);
+  this.onPauseChange?.(true, view);
 }
 
 export function resume(this: JeepEngine): void {
@@ -43,7 +44,7 @@ export function resume(this: JeepEngine): void {
   this.paused = false;
   this.audio.resume();
   this.lastT = performance.now();
-  this.onPauseChange?.(false);
+  this.onPauseChange?.(false, this.pausedView);
 }
 
 /** Attach global listeners (called once, after build). */

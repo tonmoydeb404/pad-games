@@ -59,7 +59,7 @@ window and **F4** copies a JSON report for the Phase 0 baseline.
 | **LB** / H               | Headlights                              |
 | **X** / K                | Horn                                    |
 | **RB** / R               | Reset jeep (also recover when overturned) |
-| **Back** / M             | Mute                                    |
+| **Back** / I             | Inventory (M mutes the audio)           |
 | **Start** / P / Esc      | Pause                                   |
 
 Gamepad menus: the start and pause overlays are fully pad-navigable

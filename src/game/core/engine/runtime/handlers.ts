@@ -20,6 +20,10 @@ export function onPauseKey(this: JeepEngine, e: KeyboardEvent): void {
   const k = e.key.toLowerCase();
   if (k === "f3" || k === "f4") this.onProfilerKey(k, e.shiftKey);
   if ((k === "p" || k === "escape") && this.started) this.togglePause();
+  if (k === "i" && this.started && !e.repeat) {
+    if (!this.paused) this.pause("inventory");
+    else if (this.pausedView === "inventory") this.resume();
+  }
 }
 
 const countNodes = (root: THREE.Object3D | null): number => {
