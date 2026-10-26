@@ -1,5 +1,5 @@
 {
-  "name": "pad-games",
+  "name": "tintin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,16 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "dev:server": "pnpm --filter @pad/arena-server dev",
-    "dev:all": "pnpm --parallel --filter . --filter @pad/arena-server run dev",
     "test": "vitest run"
   },
   "dependencies": {
-    "@colyseus/sdk": "^0.18.6",
     "@dimforge/rapier3d-compat": "^0.21.0",
-    "@pad/arena-shared": "workspace:*",
     "next": "16.4.3",
-    "pixi.js": "^8.22.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "three": "^0.186.1"

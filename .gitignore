@@ -44,9 +44,8 @@ yarn-error.log*
 /train-pack-sources
 # Kenney City Kit zips (Suburban + Roads), see scripts/build-city-assets.mjs
 /city-pack-sources
-# Kenney Mini Dungeon + Blaster Kit zips, see scripts/build-arena-assets.mjs
-/arena-pack-sources
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/resources

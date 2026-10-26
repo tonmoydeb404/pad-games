@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pad·Games — a gamepad-first browser arcade",
+  title: "TinTin — open-world jungle jeep",
   description:
-    "A tiny game store of original browser games: Dune Glide, Arena and Jungle Jeep. Every game is fully playable with a gamepad.",
+    "An open-world 4×4 jungle adventure in the browser, fully playable with a gamepad.",
 };
 
 export const viewport: Viewport = {

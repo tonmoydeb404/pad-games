@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import StoreView from "@/components/store/StoreView";
+import { JeepShell } from "@/components/game/jeep-shell";
 
 export const metadata: Metadata = {
-  title: "Pad·Games — a gamepad-first browser arcade",
+  title: "TinTin — open-world 4×4 jungle adventure",
   description:
-    "A tiny game store: Dune Glide, Arena and Jungle Jeep. Every game runs in the browser and is fully playable with a gamepad.",
+    "Explore an open-world jungle on foot as the explorer, then hop into a detailed 3D jeep: rocky climbs, deep ruts, a wooden bridge and a stream ford. Fully gamepad-compatible with rumble.",
 };
 
-export default function Home() {
-  return (
-    <main className="relative flex-1">
-      <StoreView />
-    </main>
-  );
+export default function JeepPage() {
+  return <JeepShell />;
 }
