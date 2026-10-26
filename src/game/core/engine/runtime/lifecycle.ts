@@ -5,6 +5,7 @@ import type { JeepEngine } from "../jeep-engine";
 export function start(this: JeepEngine): void {
   if (this.started || this.destroyed) return;
   this.started = true;
+  this.endTitleShot();
   this.input.consumeActions(); // drop anything queued before gameplay began
   this.root?.querySelector(".jj-hud")?.classList.add("on");
   this.setTip();

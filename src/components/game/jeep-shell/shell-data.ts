@@ -4,7 +4,7 @@ import type { SkinId } from "@/game/player/character";
 export const QUALITIES: { id: JeepQuality; label: string }[] = [
   { id: "low", label: "Low" },
   { id: "medium", label: "Medium" },
-  { id: "high", label: "High (4K)" },
+  { id: "high", label: "High" },
 ];
 
 /** Playable explorers — the four Kenney skins on the shared rig. */
@@ -16,9 +16,7 @@ export const CHARACTERS: { id: SkinId; label: string; blurb: string }[] = [
 ];
 export const CHARACTER_KEY = "jeep.character";
 
-export const CHAR_PREV_BTN = QUALITIES.length;
-export const CHAR_NEXT_BTN = QUALITIES.length + 1;
-export const START_BTN = QUALITIES.length + 2; // Start button index in the ring
+export const QUALITY_KEY = "tintin.quality";
 
 export const PAD_CONTROLS: [string, string][] = [
   ["Left stick", "Steer · move (tilt = walk → jog)"],

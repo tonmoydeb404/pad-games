@@ -1,12 +1,20 @@
-/** Focus-ring helpers shared by the overlay components. */
-export interface MenuFocus {
-  ringCls: (i: number) => string;
-  setFocusIdx: (i: number) => void;
-  activate: (action: string) => void;
+/** One row of the title / pause menu. Selectors cycle a value; actions just fire. */
+export interface MenuItem {
+  id: string;
+  label: string;
+  /** current value for selectors, shown between chevrons */
+  value?: string;
+  disabled?: boolean;
+  /** small right-aligned hint, e.g. loading progress */
+  hint?: string;
+  primary?: boolean;
 }
 
-export interface OverlayButton {
-  label: string;
-  disabled?: boolean;
-  action: string;
+/** Menu behaviour shared by the title and pause screens. */
+export interface MenuNav {
+  items: MenuItem[];
+  focusIdx: number;
+  setFocusIdx: (i: number) => void;
+  /** fire an item; `dir` steps a selector (default forward) */
+  activate: (id: string, dir?: 1 | -1) => void;
 }

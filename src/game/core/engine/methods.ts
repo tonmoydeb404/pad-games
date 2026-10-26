@@ -47,6 +47,7 @@ import * as runtimeFrameActions from "./runtime/frame-actions";
 import * as runtimeFrameSteps from "./runtime/frame-steps";
 import * as runtimeFrameRender from "./runtime/frame-render";
 import * as runtimeHandlers from "./runtime/handlers";
+import * as runtimeTitle from "./runtime/title";
 import * as worldInitWorld from "./world/init-world";
 
 /** Method modules are plain functions taking the engine as `this`; see jeep-engine.ts. */
@@ -99,5 +100,6 @@ export const ENGINE_METHODS = {
   ...runtimeFrameSteps,
   ...runtimeFrameRender,
   ...runtimeHandlers,
+  ...runtimeTitle,
   ...worldInitWorld,
 };

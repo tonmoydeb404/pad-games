@@ -111,6 +111,7 @@ export async function build(this: JeepEngine): Promise<void> {
   if (this.composer && this.renderer && this.camera) this.composer.render();
   else if (this.renderer && this.scene && this.camera) this.renderer.render(this.scene, this.camera);
   this.onProgress?.(100, "Ready.");
+  this.startTitleLoop();
   this.onReady?.();
 }
 

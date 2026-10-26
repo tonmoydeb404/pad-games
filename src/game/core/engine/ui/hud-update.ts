@@ -2,7 +2,6 @@
 import * as THREE from "three";
 import { DIRS } from "../config/foot-constants";
 import type { JeepEngine } from "../jeep-engine";
-import { fmtTime } from "./format-time";
 
 export function notify(this: JeepEngine, text: string): void {
   const n = this.el.notice;
@@ -53,10 +52,11 @@ export function updateUI(this: JeepEngine, dt: number): void {
   if (v.speed < -0.15) gear = "R";
   else if (Math.abs(v.speed) < 0.12 && v.throttle < 0.05) gear = v.handbrake || v.brake > 0.5 ? "P" : "N";
   if (!foot) for (const g of this.gearEls) g.classList.toggle("on", g.dataset.g === gear);
-  if (this.el.thr) {
-    // on foot the throttle bar becomes stamina
-    this.el.thr.style.width = foot ? `${this.foot.stamina}%` : `${v.throttle * 100}%`;
-    this.el.thr.style.background = foot ? (this.foot.winded ? "#e5484d" : "#5aa9e6") : "";
+  this.root?.querySelector<HTMLElement>(".jj-hud")?.setAttribute("data-mode", foot ? "foot" : "car");
+  if (this.el.thr) this.el.thr.style.width = `${v.throttle * 100}%`;
+  if (this.el.sta) {
+    this.el.sta.style.width = `${this.foot.stamina}%`;
+    this.el.sta.style.background = this.foot.winded ? "#e5484d" : "";
   }
   if (this.el.brk) this.el.brk.style.width = `${v.brake * 100}%`;
   // HP bar: always visible, full width = healthy, colour tracks the level
@@ -69,15 +69,6 @@ export function updateUI(this: JeepEngine, dt: number): void {
     const surf = this.onFoot ? this.surfaceAt(this.foot.pos.x, this.foot.pos.z) : v.surface;
     this.el.hSurf.textContent = surf.charAt(0).toUpperCase() + surf.slice(1);
   }
-  if (this.el.hLap) this.el.hLap.textContent = `${v.lap} · ${Math.round(v.progress * 100)}%`;
-  if (this.el.hTime) {
-    if (this.lapStartT < 0) this.el.hTime.textContent = "—";
-    else {
-      const t = this.countdownT > 0 ? 0 : Math.max(0, this.time - this.lapStartT);
-      this.el.hTime.textContent = fmtTime(t);
-    }
-  }
-  if (this.el.hBest) this.el.hBest.textContent = this.bestLap ? fmtTime(this.bestLap) : "—";
   const yaw = this.onFoot ? this.foot.yaw : v.yaw;
   let deg = ((-yaw * 180) / Math.PI + 180) % 360;
   if (deg < 0) deg += 360;
@@ -92,7 +83,7 @@ export function toggleHeadlights(this: JeepEngine): void {
   for (const l of this.headlights) l.intensity = this.headlightsOn ? 115 : 0;
   for (const m of this.headlampMeshes) (m.material as THREE.MeshStandardMaterial).emissiveIntensity = this.headlightsOn ? 2.6 : 0.15;
   for (const m of this.roofLamps) (m.material as THREE.MeshStandardMaterial).emissiveIntensity = this.headlightsOn ? 2.2 : 0.12;
-  if (this.el.hLamp) this.el.hLamp.textContent = this.headlightsOn ? "On" : "Off";
+  if (this.el.hLamp) this.el.hLamp.textContent = this.headlightsOn ? "Lights on" : "Lights off";
   if (this.el.hLampDot) this.el.hLampDot.classList.toggle("on", this.headlightsOn);
   this.notify(this.headlightsOn ? "Headlights on" : "Headlights off");
 }

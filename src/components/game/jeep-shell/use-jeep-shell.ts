@@ -1,13 +1,26 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { JeepEngine, JeepQuality } from "@/game/core/engine";
 import { padMenuRumble, useGamepadMenu } from "@/hooks/use-gamepad-menu";
-import { CHARACTERS, CHARACTER_KEY, QUALITIES, START_BTN } from "./shell-data";
-import type { OverlayButton } from "./menu-types";
+import type { MenuItem, MenuNav } from "./menu-types";
+import { CHARACTERS, CHARACTER_KEY, QUALITIES, QUALITY_KEY } from "./shell-data";
 
-/**
- * Shell state: engine lifecycle callbacks, explorer selection, overlay
- * buttons and gamepad-menu navigation.
- */
+const readSaved = (key: string): string | null => {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null; // private mode etc. — defaults are fine
+  }
+};
+const save = (key: string, value: string): void => {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // non-fatal
+  }
+};
+const cycle = (i: number, dir: 1 | -1, n: number): number => (i + dir + n) % n;
+
+/** Shell state: engine lifecycle, title/pause menus, settings and gamepad-menu navigation. */
 export function useJeepShell() {
   const engineRef = useRef<JeepEngine | null>(null);
   const startOverlayRef = useRef<HTMLDivElement | null>(null);
@@ -20,100 +33,83 @@ export function useJeepShell() {
   const [padConnected, setPadConnected] = useState(false);
   const [focusIdx, setFocusIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
+  const [controlsOpen, setControlsOpen] = useState(false);
   const charIdxRef = useRef(0);
 
-  // Restore the saved explorer (client only). The ref feeds the engine; the
-  // deferred state update refreshes the picker.
+  // Restore saved settings after mount (client only; the engine boots with the defaults).
   useEffect(() => {
-    let raf = 0;
-    try {
-      const saved = window.localStorage.getItem(CHARACTER_KEY);
-      const i = saved ? CHARACTERS.findIndex((c) => c.id === saved) : -1;
-      if (i > 0) {
-        charIdxRef.current = i;
-        raf = requestAnimationFrame(() => setCharIdx(i));
+    const raf = requestAnimationFrame(() => {
+      const c = CHARACTERS.findIndex((x) => x.id === readSaved(CHARACTER_KEY));
+      if (c > 0) {
+        charIdxRef.current = c;
+        setCharIdx(c);
       }
-    } catch {
-      // private mode etc. — the first explorer is fine
-    }
+      const q = QUALITIES.find((x) => x.id === readSaved(QUALITY_KEY));
+      if (q) setQuality(q.id);
+    });
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  /** Cycle the explorer; applies live to the in-game character too. */
-  const cycleCharacter = useCallback((dir: 1 | -1) => {
-    const next = (charIdxRef.current + dir + CHARACTERS.length) % CHARACTERS.length;
-    charIdxRef.current = next;
-    setCharIdx(next);
-    const id = CHARACTERS[next].id;
-    void engineRef.current?.setSkin(id);
-    try {
-      window.localStorage.setItem(CHARACTER_KEY, id);
-    } catch {
-      // non-fatal
-    }
-  }, []);
-
-  // Stable engine callbacks -------------------------------------------------
   const onEngine = useCallback((engine: JeepEngine) => {
     engineRef.current = engine;
-    // Apply the restored selection — the engine boots with the first explorer.
     void engine.setSkin(CHARACTERS[charIdxRef.current].id);
   }, []);
-  const onProgress = useCallback((pct: number, label: string) => {
-    setProgress({ pct, label });
-  }, []);
+  const onProgress = useCallback((pct: number, label: string) => setProgress({ pct, label }), []);
   const onReady = useCallback(() => {
     setReady(true);
-    // Land focus on the Start button once the world is built.
-    setFocusIdx(START_BTN);
+    setFocusIdx(0); // land on Play
   }, []);
-  const onPauseChange = useCallback((p: boolean) => setPaused(p), []);
+  const onPauseChange = useCallback((p: boolean) => {
+    setPaused(p);
+    setFocusIdx(0);
+    if (!p) setControlsOpen(false);
+  }, []);
   const onPadChange = useCallback((c: boolean) => setPadConnected(c), []);
 
-  // Gamepad menu navigation -------------------------------------------------
-  const qualityLocked = ready;
-
-  /** Pure button data — no ref-touching closures, safe to build in render. */
-  const overlayButtons = useMemo<OverlayButton[]>(() => {
-    if (!started) {
+  const items = useMemo<MenuItem[]>(() => {
+    if (started) {
       return [
-        ...QUALITIES.map((q) => ({
-          label: q.label,
-          disabled: qualityLocked,
-          action: `quality:${q.id}`,
-        })),
-        { label: "◀", action: "character:prev" },
-        { label: "▶", action: "character:next" },
-        { label: ready ? "Start Experience" : "Preparing…", disabled: !ready, action: "start" },
+        { id: "resume", label: "Resume", primary: true },
+        { id: "controls", label: "Controls" },
+        { id: "restart", label: "Respawn at the trail" },
       ];
     }
     return [
-      { label: "Resume", action: "resume" },
-      { label: "Restart Trail", action: "restart" },
+      { id: "start", label: "Play", primary: true, disabled: !ready, hint: ready ? undefined : `${progress.pct}%` },
+      { id: "character", label: "Explorer", value: CHARACTERS[charIdx].label.split(" · ")[0] },
+      { id: "quality", label: "Graphics", value: quality },
+      { id: "controls", label: "Controls" },
     ];
-  }, [started, qualityLocked, ready]);
+  }, [started, ready, progress.pct, charIdx, quality]);
 
-  /** Dispatches a button action. Event-handler context only. */
   const activate = useCallback(
-    (action: string) => {
-      if (action.startsWith("quality:")) {
-        if (!qualityLocked) setQuality(action.slice(8) as JeepQuality);
-        return;
-      }
-      if (action === "character:prev") {
-        cycleCharacter(-1);
-        return;
-      }
-      if (action === "character:next") {
-        cycleCharacter(1);
-        return;
-      }
-      switch (action) {
+    (id: string, dir: 1 | -1 = 1) => {
+      switch (id) {
         case "start":
           if (ready && !started) {
             setStarted(true);
             engineRef.current?.start();
           }
+          break;
+        case "character": {
+          const next = cycle(charIdxRef.current, dir, CHARACTERS.length);
+          charIdxRef.current = next;
+          setCharIdx(next);
+          void engineRef.current?.setSkin(CHARACTERS[next].id);
+          save(CHARACTER_KEY, CHARACTERS[next].id);
+          break;
+        }
+        case "quality": {
+          // graphics are baked at world build: changing them rebuilds the world
+          const next = QUALITIES[cycle(QUALITIES.findIndex((q) => q.id === quality), dir, QUALITIES.length)].id;
+          setQuality(next);
+          setReady(false);
+          setProgress({ pct: 0, label: "Rebuilding the world…" });
+          save(QUALITY_KEY, next);
+          break;
+        }
+        case "controls":
+          setControlsOpen(true);
           break;
         case "resume":
           engineRef.current?.resume();
@@ -124,56 +120,78 @@ export function useJeepShell() {
           break;
       }
     },
-    [qualityLocked, ready, started, cycleCharacter],
+    [ready, started, quality],
   );
 
-  // Stale index (e.g. after switching overlays) clamps instead of cascading.
-  const clampedIdx = Math.min(focusIdx, overlayButtons.length - 1);
+  const clampedIdx = Math.min(focusIdx, items.length - 1);
   const overlayVisible = !started || paused;
+  const menuActive = overlayVisible && !controlsOpen;
 
-  useGamepadMenu(
-    overlayVisible,
-    useCallback(
-      (action) => {
-        const count = overlayButtons.length;
-        if (action === "up" || action === "down" || action === "left" || action === "right") {
-          const dir = action === "up" || action === "left" ? -1 : 1;
-          setFocusIdx((i) => (Math.min(i, count - 1) + dir + count) % count);
-          padMenuRumble("move");
-          return;
+  const step = useCallback(
+    (dir: 1 | -1) =>
+      setFocusIdx((i) => {
+        let n = Math.min(i, items.length - 1);
+        for (let k = 0; k < items.length; k++) {
+          n = cycle(n, dir, items.length);
+          if (!items[n].disabled) break;
         }
-        if (action === "confirm") {
-          const btn = overlayButtons[Math.min(focusIdx, count - 1)];
-          if (btn && !btn.disabled) {
-            activate(btn.action);
-            padMenuRumble("confirm");
-          }
-          return;
-        }
-        if (action === "back") {
-          if (paused) activate("resume");
-        }
-      },
-      [overlayButtons, focusIdx, paused, activate],
-    ),
+        return n;
+      }),
+    [items],
   );
 
-  // Keep DOM focus in sync with the ring (keyboard Enter then just works).
-  useEffect(() => {
-    if (!overlayVisible) return;
-    const container = paused
-      ? pauseOverlayRef.current
-      : started
-        ? null
-        : startOverlayRef.current;
-    const el = container?.querySelector<HTMLElement>(`[data-mb="${clampedIdx}"]`);
-    el?.focus({ preventScroll: true, focusVisible: true } as FocusOptions);
-  }, [clampedIdx, overlayVisible, started, paused]);
+  const onMenuAction = useCallback(
+    (action: "up" | "down" | "left" | "right" | "confirm" | "back") => {
+      if (controlsOpen) {
+        if (action === "back" || action === "confirm") setControlsOpen(false);
+        return;
+      }
+      const cur = items[clampedIdx];
+      if (action === "up" || action === "down") {
+        step(action === "up" ? -1 : 1);
+        padMenuRumble("move");
+      } else if (action === "left" || action === "right") {
+        if (cur?.value !== undefined) {
+          activate(cur.id, action === "left" ? -1 : 1);
+          padMenuRumble("move");
+        }
+      } else if (action === "confirm") {
+        if (cur && !cur.disabled) {
+          activate(cur.id);
+          padMenuRumble("confirm");
+        }
+      } else if (paused) activate("resume");
+    },
+    [controlsOpen, items, clampedIdx, step, activate, paused],
+  );
 
-  const ringCls = (i: number) =>
-    clampedIdx === i && overlayVisible
-      ? "outline outline-2 outline-offset-2 outline-lime-300"
-      : "outline-none";
+  useGamepadMenu(overlayVisible, onMenuAction);
+
+  // Keyboard: arrows move/adjust (Enter/Space click the focused button natively).
+  useEffect(() => {
+    if (!menuActive && !controlsOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      const map: Record<string, "up" | "down" | "left" | "right" | "back"> = {
+        ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right", Escape: "back",
+      };
+      const a = map[e.key];
+      if (!a) return;
+      if (a === "back" && !controlsOpen) return; // the engine owns Esc-to-pause
+      e.preventDefault();
+      onMenuAction(a);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuActive, controlsOpen, onMenuAction]);
+
+  // Keep DOM focus on the highlighted row.
+  useEffect(() => {
+    if (!menuActive) return;
+    const root = paused ? pauseOverlayRef.current : startOverlayRef.current;
+    root?.querySelector<HTMLElement>(`[data-mb="${clampedIdx}"]`)?.focus({ preventScroll: true });
+  }, [clampedIdx, menuActive, paused]);
+
+  const nav: MenuNav = { items, focusIdx: clampedIdx, setFocusIdx, activate };
 
   return {
     startOverlayRef,
@@ -185,10 +203,9 @@ export function useJeepShell() {
     quality,
     padConnected,
     charIdx,
-    qualityLocked,
-    overlayButtons,
-    clampedIdx,
-    focus: { ringCls, setFocusIdx, activate },
+    nav,
+    controlsOpen,
+    closeControls: () => setControlsOpen(false),
     engineCallbacks: { onEngine, onProgress, onReady, onPauseChange, onPadChange },
   };
 }

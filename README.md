@@ -1,6 +1,6 @@
 # TinTin
 
-An open-world 4×4 jungle adventure that runs in the browser and is fully
+An open-world jungle survival sandbox (in progress — see `ROADMAP.md`) that runs in the browser and is fully
 playable with a gamepad (keyboard and mouse work too).
 
 > Original concept by Ali Usman. Vegetation, town kits and audio come from CC0
@@ -72,7 +72,7 @@ Gamepad menus: the start and pause overlays are fully pad-navigable
 ```
 src/
   app/                 single route: / (page and layout keep default exports, as Next requires)
-  components/game/     jeep-shell/ (start/pause overlays), jeep-canvas, character-preview
+  components/game/     jeep-shell/ (title, pause and controls menus), jeep-canvas
   hooks/               use-gamepad-menu
   game/                the engine, outside React
     core/              profiler/ (dev overlay), engine/ (state, world, vehicle, player, camera, ui, runtime), audio/, input/, assets/, noise
