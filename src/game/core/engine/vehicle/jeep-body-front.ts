@@ -36,12 +36,23 @@ export function addFrontEnd(this: JeepEngine, bodyGroup: THREE.Group, M: JeepEng
 
   // bull bar + fog lights
   const bar = new THREE.Group();
-  const hoop = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.05, 7, 18, Math.PI), M.blackMatte);
-  hoop.position.set(0, 0.34, -2.1);
-  hoop.castShadow = true;
-  bar.add(hoop);
-  const vbar = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.9, 8), M.blackMatte);
-  vbar.position.set(0, 0.1, -2.1);
+  // top rail across the nose, corner posts and a centre post, all in front of the grille
+  const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1.4, 8), M.blackMatte);
+  rail.rotation.z = Math.PI / 2;
+  rail.position.set(0, 0.5, -2.1);
+  rail.castShadow = true;
+  bar.add(rail);
+  for (const s of [-1, 1]) {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.62, 8), M.blackMatte);
+    post.position.set(s * 0.7, 0.19, -2.1);
+    bar.add(post);
+    const wrap = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.3, 8), M.blackMatte);
+    wrap.rotation.x = Math.PI / 2;
+    wrap.position.set(s * 0.7, 0.5, -1.95);
+    bar.add(wrap);
+  }
+  const vbar = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.62, 8), M.blackMatte);
+  vbar.position.set(0, 0.19, -2.1);
   bar.add(vbar);
   for (const s of [-1, 1]) {
     const stay = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.55, 8), M.blackMatte);

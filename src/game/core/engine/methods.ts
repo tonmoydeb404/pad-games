@@ -13,6 +13,7 @@ import * as worldBuild from "./world/build";
 import * as worldBuildSystems from "./world/build-systems";
 import * as worldBuildAnimals from "./world/build-animals";
 import * as vehicleJeepParts from "./vehicle/jeep-parts";
+import * as vehicleJeepWheel from "./vehicle/jeep-wheel";
 import * as vehicleJeepUndercarriage from "./vehicle/jeep-undercarriage";
 import * as vehicleJeepInterior from "./vehicle/jeep-interior";
 import * as vehicleJeepBodyShell from "./vehicle/jeep-body-shell";
@@ -66,6 +67,7 @@ export const ENGINE_METHODS = {
   ...worldBuildSystems,
   ...worldBuildAnimals,
   ...vehicleJeepParts,
+  ...vehicleJeepWheel,
   ...vehicleJeepUndercarriage,
   ...vehicleJeepInterior,
   ...vehicleJeepBodyShell,

@@ -84,20 +84,22 @@ export function addBodyShell(this: JeepEngine, bodyGroup: THREE.Group, M: JeepEn
 
 /** Wheel arches, flares and the windshield. */
 export function addFendersAndGlass(this: JeepEngine, bodyGroup: THREE.Group, M: JeepEngine["M"]): void {
-  // fenders
+  // fenders: a flat flare shelf over each tyre with a half-round lip, centred on the axle
   for (let i = 0; i < 4; i++) {
     const p = this.wheelPos[i];
-    const arch = new THREE.Mesh(new THREE.TorusGeometry(0.66, 0.075, 6, 14, Math.PI), M.blackMatte);
-    arch.position.set(p.x * 1.03, 0.06, p.z);
-    arch.rotation.y = Math.PI / 2;
-    arch.castShadow = true;
-    bodyGroup.add(arch);
-    const flare = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.1, 1.3), M.blackMatte);
-    flare.position.set(p.x * 1.06, 0.24, p.z);
+    const side = Math.sign(p.x);
+    const lip = new THREE.Mesh(new THREE.TorusGeometry(0.66, 0.04, 6, 24, Math.PI), M.blackMatte);
+    lip.position.set(side * 1.06, -0.42, p.z);
+    lip.rotation.y = Math.PI / 2;
+    lip.castShadow = true;
+    bodyGroup.add(lip);
+    const flare = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.05, 1.32), M.blackMatte);
+    flare.position.set(side * 0.96, 0.23, p.z);
+    flare.castShadow = true;
     bodyGroup.add(flare);
-    const well = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.42, 12, 1, true), M.blackMatte);
+    const well = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.4, 16, 1, true), M.blackMatte);
     well.rotation.z = Math.PI / 2;
-    well.position.set(p.x * 0.8, 0.02, p.z);
+    well.position.set(side * 0.72, -0.42, p.z);
     (well.material as THREE.MeshStandardMaterial).side = THREE.BackSide;
     bodyGroup.add(well);
   }

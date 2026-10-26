@@ -13,8 +13,8 @@ export function addCageAndDoors(this: JeepEngine, bodyGroup: THREE.Group, M: Jee
     hoopV.position.set(s * 0.8, 0.86, 0.62);
     cage.add(hoopV);
     const rearStay = new THREE.Mesh(tube(1.25), cageM);
-    rearStay.position.set(s * 0.8, 0.86, 1.35);
-    rearStay.rotation.x = 0.42;
+    rearStay.position.set(s * 0.8, 0.94, 1.06);
+    rearStay.rotation.x = -0.78; // top end forward at the hoop, bottom end back at the tail
     cage.add(rearStay);
     const roofRail = new THREE.Mesh(tube(1.75), cageM);
     roofRail.rotation.x = Math.PI / 2;
@@ -82,11 +82,6 @@ export function addCageAndDoors(this: JeepEngine, bodyGroup: THREE.Group, M: Jee
       hinge.position.set(s * 0.9, 0.4, dz);
       bodyGroup.add(hinge);
     }
-    const winF = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.44), M.glass);
-    winF.position.set(s * 0.855, 0.94, -0.08);
-    winF.rotation.y = Math.PI / 2;
-    winF.renderOrder = 3;
-    bodyGroup.add(winF);
   }
 }
 
@@ -113,10 +108,10 @@ export function addRearAndMounts(this: JeepEngine, bodyGroup: THREE.Group, M: Je
   const spare = this.buildWheel();
   spare.scale.setScalar(0.94);
   spare.rotation.y = Math.PI / 2;
-  spare.position.set(0.06, 0.52, 2.1);
+  spare.position.set(0, 0.56, 2.04);
   bodyGroup.add(spare);
-  const carrier = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.42), M.blackMatte);
-  carrier.position.set(0.06, 0.52, 1.94);
+  const carrier = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.2), M.blackMatte);
+  carrier.position.set(0, 0.56, 1.9);
   bodyGroup.add(carrier);
   const plate = new THREE.Mesh(
     new THREE.PlaneGeometry(0.46, 0.17),
@@ -135,22 +130,27 @@ export function addRearAndMounts(this: JeepEngine, bodyGroup: THREE.Group, M: Je
   bodyGroup.add(antBase);
   const antWhip = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.014, 1.45, 6), M.steel);
   antWhip.position.set(0.86, 1.4, 1.76);
-  antWhip.rotation.z = -0.08;
+  antWhip.rotation.z = 0.08; // leans inward
   bodyGroup.add(antWhip);
   const antTip = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), M.chrome);
-  antTip.position.set(0.81, 2.12, 1.76);
+  antTip.position.set(0.802, 2.125, 1.76);
   bodyGroup.add(antTip);
 
-  // snorkel
-  const snork = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.3, 10), M.blackMatte);
-  snork.position.set(0.86, 0.86, -1.32);
+  // snorkel: rises from the right fender along the windshield pillar, intake facing forward
+  const snork = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.9, 10), M.blackMatte);
+  snork.position.set(0.94, 0.88, -1.03);
   bodyGroup.add(snork);
-  const snorkHead = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.08, 0.24, 10), M.blackMatte);
-  snorkHead.position.set(0.86, 1.56, -1.32);
-  snorkHead.rotation.x = -0.35;
+  for (const y of [0.62, 1.1]) {
+    const clamp = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.05, 0.14), M.blackSemi);
+    clamp.position.set(0.9, y, -0.98);
+    bodyGroup.add(clamp);
+  }
+  const snorkHead = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.16, 12), M.blackMatte);
+  snorkHead.rotation.x = Math.PI / 2;
+  snorkHead.position.set(0.94, 1.36, -1.08);
   bodyGroup.add(snorkHead);
-  const snorkCap = new THREE.Mesh(new THREE.CircleGeometry(0.09, 10), M.blackSemi);
-  snorkCap.position.set(0.86, 1.66, -1.36);
-  snorkCap.rotation.x = -0.35;
-  bodyGroup.add(snorkCap);
+  const snorkMouth = new THREE.Mesh(new THREE.CircleGeometry(0.065, 12), M.blackSemi);
+  snorkMouth.rotation.y = Math.PI;
+  snorkMouth.position.set(0.94, 1.36, -1.162);
+  bodyGroup.add(snorkMouth);
 }
