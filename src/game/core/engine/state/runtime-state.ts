@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { JeepAudio } from "../../audio";
 import { JeepInput } from "../../input";
+import type { Profiler } from "../../profiler";
 import { PlayerState } from "./player-state";
 
 export class RuntimeState extends PlayerState {
@@ -48,4 +49,7 @@ export class RuntimeState extends PlayerState {
   readonly upVec = new THREE.Vector3();
   noticeTimer = 0;
   uiAcc = 0;
+  /** Dev-only frame profiler (F3); null until first toggled. */
+  profiler: Profiler | null = null;
+  profilerOn = false;
 }

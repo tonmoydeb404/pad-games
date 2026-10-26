@@ -5,11 +5,13 @@ import type { JeepEngine } from "../jeep-engine";
 export function animate(this: JeepEngine, now: number): void {
   if (this.destroyed) return;
   this.rafId = requestAnimationFrame(this.animate);
-  let dt = (now - this.lastT) / 1000;
+  const rawMs = now - this.lastT;
+  let dt = rawMs / 1000;
   this.lastT = now;
   if (!isFinite(dt)) dt = 0.016;
   dt = clamp(dt, 0.0005, 0.05);
   if (this.paused || document.hidden) return;
+  this.profiler?.begin(isFinite(rawMs) && rawMs < 1000 ? rawMs : 16.7); // resume gaps aren't frames
 
   // hit-stop (game-feel): big impacts briefly slow time; input stays live
   if (this.slowmoT > 0) {
@@ -37,6 +39,7 @@ export function animate(this: JeepEngine, now: number): void {
   this.updateActors(dt, snap);
   this.updateFeedback(dt, stickLooking);
   this.renderFrame();
+  this.profiler?.end();
 }
 
 /** Wrecked: heavy smoke while dead in the water, then recover at 65%. */

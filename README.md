@@ -40,6 +40,12 @@ start overlay, pause overlay and error states.
   are distance-attenuated and stereo-panned. Assets: `public/assets/jeep/train`
   (CC0 Train Pack, `scripts/build-train-assets.mjs`); behaviour: `src/game/world/train/`.
 
+### Profiling (dev)
+
+In `pnpm dev` (or any build with `?profile`), **F3** shows a frame-time overlay
+(fps, p50/p95/p99, spikes, draw calls, triangles, heap), **Shift+F3** clears the
+window and **F4** copies a JSON report for the Phase 0 baseline.
+
 ### Controls
 
 | Input                    | Action                                  |
@@ -69,7 +75,7 @@ src/
   components/game/     jeep-shell/ (start/pause overlays), jeep-canvas, character-preview
   hooks/               use-gamepad-menu
   game/                the engine, outside React
-    core/              engine/ (state, world, vehicle, player, camera, ui, runtime), audio/, input/, assets/, noise
+    core/              profiler/ (dev overlay), engine/ (state, world, vehicle, player, camera, ui, runtime), audio/, input/, assets/, noise
     physics/           vehicle physics, ground
     world/             city, train, animals
     player/            character, cars (jeep handling stats + crash debris)

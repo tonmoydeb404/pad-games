@@ -1,5 +1,6 @@
 /** DOM event handlers (bound in the constructor). */
 import { clamp } from "../../noise";
+import { Profiler } from "../../profiler";
 import { MODES } from "../config/foot-constants";
 import type { JeepEngine } from "../jeep-engine";
 
@@ -16,7 +17,32 @@ export function onResize(this: JeepEngine): void {
 /** Keyboard pause/resume — must work while paused, unlike pad actions. */
 export function onPauseKey(this: JeepEngine, e: KeyboardEvent): void {
   const k = e.key.toLowerCase();
+  if (k === "f3" || k === "f4") this.onProfilerKey(k, e.shiftKey);
   if ((k === "p" || k === "escape") && this.started) this.togglePause();
+}
+
+/** F3 shows/hides the dev profiler (Shift+F3 clears it), F4 copies its report. Dev builds or `?profile` only. */
+export function onProfilerKey(this: JeepEngine, k: string, shift: boolean): void {
+  if (process.env.NODE_ENV === "production" && !new URLSearchParams(location.search).has("profile")) return;
+  if (!this.renderer) return;
+  if (!this.profiler) {
+    this.profiler = new Profiler(this.container, this.renderer, {
+      counts: () => ({ animals: this.animals?.count ?? 0, sceneObjects: this.scene?.children.length ?? 0 }),
+    });
+    this.profilerOn = true;
+    return;
+  }
+  if (k === "f4") {
+    const json = JSON.stringify(this.profiler.report(), null, 2);
+    console.info("[profiler]", json);
+    void navigator.clipboard?.writeText(json).catch(() => {});
+    return;
+  }
+  if (shift) this.profiler.clear();
+  else {
+    this.profilerOn = !this.profilerOn;
+    this.profiler.setVisible(this.profilerOn);
+  }
 }
 
 export function onMouseDown(this: JeepEngine, e: MouseEvent): void {

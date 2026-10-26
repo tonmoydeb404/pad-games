@@ -52,6 +52,11 @@ export class AnimalSystem {
     spawnAll(this.ctx, seed);
   }
 
+  /** Total live actors (profiler / tests). */
+  get count(): number {
+    return this.ctx.actors.length;
+  }
+
   /** How many animals of a species made it into the world. */
   countOf(file: string): number {
     return this.ctx.actors.filter((a) => a.def.file === file).length;

@@ -71,6 +71,8 @@ export function destroy(this: JeepEngine): void {
   window.removeEventListener("wheel", this.onWheel as EventListener);
   document.removeEventListener("visibilitychange", this.onVisibility as EventListener);
   this.input.detach();
+  this.profiler?.destroy();
+  this.profiler = null;
   this.animals?.destroy();
   this.animals = null;
   this.citySystem?.destroy();
