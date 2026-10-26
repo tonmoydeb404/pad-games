@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { CAR_CATALOG } from "../../player/cars";
 import { autopilot, makeEngine } from "../engine-harness";
 
 describe("jeep engine on Rapier (headless)", () => {
@@ -28,19 +27,6 @@ describe("jeep engine on Rapier (headless)", () => {
     expect(e.rig.contacts).toBeGreaterThanOrEqual(3);
     expect(e.rig.up().y).toBeGreaterThan(0.9);
   });
-
-  for (const id of ["race", "garbage-truck", "tractor", "kart-oobi"]) {
-    it(`${id} handles the trail without flipping`, async () => {
-      const e = await makeEngine();
-      e.perf = { ...CAR_CATALOG.find((c) => c.id === id)!.perf };
-      e.rebuildRig();
-      e.resetVehicle(Math.floor(1400 * 0.01));
-      for (let i = 0; i < 60; i++) e.updateVehicle(1 / 60);
-      const st = autopilot(e, 30, 46.8 * e.perf.speed * 0.75);
-      expect(st.minUp).toBeGreaterThan(0.6);
-      expect(st.progress).not.toBeNaN();
-    }, 30000);
-  }
 
   describe("obstacles", () => {
     /** Place trunks relative to the car's start pose; drive straight ahead. */

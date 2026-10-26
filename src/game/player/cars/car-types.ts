@@ -1,15 +1,7 @@
 import type * as THREE from "three";
 
-export interface CarSpec {
-  id: string;
-  label: string;
-  /** Driving character — see CarPerf. Every field is a multiplier vs the
-   *  jeep baseline unless noted. */
-  perf: CarPerf;
-}
-
 /**
- * Per-vehicle driving stats (GTA-style). The jeep's profile is the physics
+ * Per-vehicle driving stats (GTA-style); every field is a multiplier vs the jeep unless noted. The jeep's profile is the physics
  * baseline — 1.0 / stock values reproduce its current handling exactly.
  */
 export interface CarPerf {
@@ -42,35 +34,4 @@ export interface CarPerf {
 export interface CarPart {
   geometry: THREE.BufferGeometry;
   material: THREE.Material;
-}
-
-export interface CarWheel {
-  /** Re-centred meshes, ready to drop into the rig's spin group. */
-  parts: CarPart[];
-  /** Rig-space x/z (mirrored + scaled). y is the rig's axle line. */
-  x: number;
-  z: number;
-  /** Scaled wheel radius (model radius × scale). */
-  radius: number;
-}
-
-export interface LoadedCar {
-  spec: CarSpec;
-  /** Body meshes, positioned for identity transform under the rig. */
-  parts: CarPart[];
-  wheels: CarWheel[]; // order: FL, FR, RL, RR (engine wheel order)
-  /** Scaled footprint, rig space. */
-  length: number;
-  track: number;
-  /** Suspension solver radius (avg of front/rear, scaled). */
-  wheelR: number;
-  /** Height of the body's midline above its ground plane (scaled). */
-  bodyH: number;
-}
-
-export interface RawWheel {
-  parts: CarPart[];
-  x: number;
-  z: number;
-  radius: number;
 }

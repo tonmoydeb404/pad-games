@@ -68,21 +68,5 @@ export function buildJeep(this: JeepEngine): void {
     });
   }
 
-  // --- Kenney car swap rig -------------------------------------------------
-  // The car body mounts into bodyGroup (inheriting the vibration shake).
-  // The jeep's own body visuals are moved into jeepBodyStash — hidden —
-  // only while a Kenney car is active (see applyVehicleVisuals). The
-  // interior and the headlight SpotLights always stay in bodyGroup; the
-  // stock light transforms are remembered for the restore path.
-  for (const sl of this.headlights) {
-    this.headlightHome.push({
-      light: sl,
-      pos: sl.position.clone(),
-      target: sl.target.position.clone(),
-    });
-  }
-  jeep.add(this.jeepBodyStash);
-  bodyGroup.add(this.carBody);
-
   scene.add(jeep);
 }

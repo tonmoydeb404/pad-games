@@ -25,7 +25,6 @@ export class JeepEngine extends RuntimeState {
     super();
     this.container = opts.container;
     this.Q = QUALITY[opts.quality ?? "high"];
-    this.vehicleId = opts.vehicleId ?? null;
     this.initTrail();
     this.initSites();
     this.input.onConnectChange = (c, id) => {
@@ -42,11 +41,6 @@ export class JeepEngine extends RuntimeState {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onWheel = this.onWheel.bind(this);
     this.onVisibility = this.onVisibility.bind(this);
-  }
-
-  /** Currently selected vehicle id (null = jeep) — for the shell's UI. */
-  get vehicle(): string | null {
-    return this.activeCar?.spec.id ?? null;
   }
 
   get isPaused(): boolean {

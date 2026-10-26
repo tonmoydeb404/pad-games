@@ -1,8 +1,8 @@
 /**
- * Build the Jungle Jeep car pack: Kenney "Car Kit" (CC0) → GLB files in
- * public/assets/jeep/cars/.
+ * Build the crash-debris pack: Kenney "Car Kit" (CC0) → debris GLB files in
+ * public/assets/jeep/cars/. (The kit's vehicles are not shipped — only the jeep.)
  *
- *   Kenney Car Kit (3.1) — 25 vehicles + 15 debris parts, GLB format
+ *   Kenney Car Kit (3.1) — 15 debris parts used, GLB format
  *   License: CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
  *
  * The GLBs reference their texture by the relative URI
@@ -17,8 +17,6 @@
  *
  *   node scripts/build-car-assets.mjs --zip ~/Downloads/kenney_car-kit.zip
  *
- * Standalone wheel/box/cone GLBs are skipped: every vehicle model carries
- * its own wheel nodes, and the debris parts ship separately below.
  */
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
@@ -33,8 +31,8 @@ const argZip = process.argv.includes("--zip")
   ? path.resolve(process.argv[process.argv.indexOf("--zip") + 1])
   : path.join(root, "car-kit-sources", "kenney_car-kit.zip");
 
-/** Files that are not vehicles or debris (props + standalone wheels). */
-const SKIP = /^(box|cone|cone-flat|wheel-[^/]*)\.glb$/;
+/** Only the crash-debris parts are shipped. */
+const KEEP = /^debris-.*\.glb$/;
 
 if (!fs.existsSync(argZip)) {
   console.error(`Car kit zip not found: ${argZip}`);
@@ -54,7 +52,7 @@ try {
   let copied = 0;
   let bytes = 0;
   for (const entry of fs.readdirSync(glbDir)) {
-    if (!entry.endsWith(".glb") || SKIP.test(entry)) continue;
+    if (!KEEP.test(entry)) continue;
     fs.copyFileSync(path.join(glbDir, entry), path.join(OUT, entry));
     copied++;
     bytes += fs.statSync(path.join(OUT, entry)).size;

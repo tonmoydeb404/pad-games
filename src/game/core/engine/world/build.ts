@@ -67,7 +67,6 @@ export async function build(this: JeepEngine): Promise<void> {
   void this.initDebris();
   this.buildHud();
   this.resetVehicle(Math.floor(SAMPLES * 0.01));
-  if (this.vehicleId) void this.setVehicle(this.vehicleId);
   this.v.lap = 0;
   this.v.prevT = 0.01;
   this.setCameraMode(0);

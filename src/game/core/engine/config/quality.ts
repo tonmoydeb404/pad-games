@@ -26,6 +26,4 @@ export const QUALITY: Record<
 export interface JeepOptions {
   container: HTMLElement;
   quality?: JeepQuality;
-  /** Kenney Car Kit vehicle id (see src/game/player/cars.ts); null = classic jeep. */
-  vehicleId?: string | null;
 }

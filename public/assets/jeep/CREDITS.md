@@ -3,7 +3,7 @@
 | Asset | Author | License | Files |
 | --- | --- | --- | --- |
 | Ultimate Stylized Nature (May 2022) — **all 63 vegetation models** (maples, birches, NormalTrees, pines, dead trees, bushes, flowers, grass, plants, petals, and OBJ-source palm/rock conversions) | [Quaternius](https://www.patreon.com/quaternius) | CC0 1.0 | `nature/*.gltf`, `nature/*.bin`, `nature/*.png`, `nature/*.jpg`, `nature/*.glb` |
-| Car Kit (3.1) — **25 vehicles + 14 debris parts** (selectable rides + crash effects, see `src/jeep/cars.ts`) | [Kenney](https://kenney.nl/assets/car-kit) | CC0 1.0 | `cars/*.glb`, `cars/Textures/colormap.png` (rebuilt from the original zip with `scripts/build-car-assets.mjs`) |
+| Car Kit (3.1) — **14 debris parts** (crash effects, see `src/game/player/cars/load-debris.ts`) | [Kenney](https://kenney.nl/assets/car-kit) | CC0 1.0 | `cars/debris-*.glb`, `cars/Textures/colormap.png` (rebuilt from the original zip with `scripts/build-car-assets.mjs`) |
 | Train Pack (April 2019) — **steam locomotive, coal tender, 3 wagons + track piece** (the Jungle Express, see `src/jeep/train.ts`) | [Kenney](https://kenney.nl/assets/train-pack) | CC0 1.0 | `train/*.glb` (converted from the pack's OBJ sources with `scripts/build-train-assets.mjs`, re-coloured into the Express livery) |
 | City Kit (Suburban) 2.0 — **all 21 houses, fences, paths, planters and yard trees** (Port Marin's neighbourhoods, see `src/jeep/city.ts`) | [Kenney](https://kenney.nl/assets/city-kit-suburban) | CC0 1.0 | `city/town/*.glb` + `city/town/Textures/colormap.png` (shipped verbatim by `scripts/build-city-assets.mjs`) |
 | City Kit (Roads) — **street tiles (straight/bend/crossroad/dead-end/zebra), lamps, signs, traffic light, power poles, cones + dumpster, highway board** (Port Marin's streets and access road) | [Kenney](https://kenney.nl/assets/city-kit-roads) | CC0 1.0 | `city/roads/*.glb` + `city/roads/Textures/colormap.png` (shipped verbatim by `scripts/build-city-assets.mjs`) |
@@ -20,11 +20,10 @@ anyway, good assets deserve it). Downloaded 2026-10-25.
 
 Pipeline notes:
 
-- Kenney Car Kit vehicles ship as the pack's own GLBs (rebuilt by
+- Kenney Car Kit debris ships as the pack's own GLBs (rebuilt by
   `scripts/build-car-assets.mjs`, which also keeps the shared
   `Textures/colormap.png` next to them — the GLBs reference it by relative
-  URI). Normalisation (mirroring into rig space, footprint scaling,
-  wheel-node extraction) happens at load time in `src/jeep/cars.ts`.
+  URI). The jeep itself is procedural; no other vehicles ship for now.
 - Train Pack GLBs are converted from the pack's gray OBJ exports by
   `scripts/build-train-assets.mjs` (sources in the git-ignored
   `train-pack-sources/`): re-coloured by object-name rules into the Jungle

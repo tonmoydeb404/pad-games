@@ -57,7 +57,7 @@ export function updatePrompt(this: JeepEngine): void {
   if (!show) return;
   if (this.riding) pr.textContent = `${key} — dismount`;
   else if (rideFirst && ride) pr.textContent = `${key} — ride the ${ride.name.replace(/_/g, " ")}`;
-  else pr.textContent = `${key} — enter the ${this.activeCar ? "vehicle" : "jeep"}`;
+  else pr.textContent = `${key} — enter the jeep`;
 }
 
 /** Show the HUD for who you are right now: driver dashboard or explorer vitals. */

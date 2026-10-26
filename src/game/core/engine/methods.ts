@@ -19,8 +19,7 @@ import * as vehicleJeepBodyShell from "./vehicle/jeep-body-shell";
 import * as vehicleJeepBodyFront from "./vehicle/jeep-body-front";
 import * as vehicleJeepBodyCabin from "./vehicle/jeep-body-cabin";
 import * as vehicleJeepBody from "./vehicle/jeep-body";
-import * as vehicleSwap from "./vehicle/swap";
-import * as vehicleVisuals from "./vehicle/visuals";
+import * as vehicleRig from "./vehicle/vehicle-rig";
 import * as vehicleDebris from "./vehicle/debris";
 import * as vehicleReset from "./vehicle/reset";
 import * as vehicleUpdateVehicle from "./vehicle/update-vehicle";
@@ -72,8 +71,7 @@ export const ENGINE_METHODS = {
   ...vehicleJeepBodyFront,
   ...vehicleJeepBodyCabin,
   ...vehicleJeepBody,
-  ...vehicleSwap,
-  ...vehicleVisuals,
+  ...vehicleRig,
   ...vehicleDebris,
   ...vehicleReset,
   ...vehicleUpdateVehicle,

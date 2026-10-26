@@ -66,13 +66,13 @@ Gamepad menus: the start and pause overlays are fully pad-navigable
 ```
 src/
   app/                 single route: / (page and layout keep default exports, as Next requires)
-  components/game/     jeep-shell/ (start/pause overlays), jeep-canvas, previews
+  components/game/     jeep-shell/ (start/pause overlays), jeep-canvas, character-preview
   hooks/               use-gamepad-menu
   game/                the engine, outside React
     core/              engine/ (state, world, vehicle, player, camera, ui, runtime), audio/, input/, assets/, noise
     physics/           vehicle physics, ground
     world/             city, train, animals
-    player/            character, cars
+    player/            character, cars (jeep handling stats + crash debris)
     weapons/           weapons, gun models
 public/assets/jeep/    CC0 models and audio
 scripts/               asset build/validate pipelines (inputs are git-ignored *-pack-sources/)
