@@ -14,9 +14,10 @@ export const HUD_CSS = `
   linear-gradient(180deg, rgba(255,230,170,.08), rgba(30,50,20,.08)); }
 .jj-vig { z-index:11; background:radial-gradient(110% 85% at 50% 50%, transparent 55%, rgba(4,8,2,.52) 100%); }
 .jj-hud { position:absolute; inset:0; z-index:20; pointer-events:none; opacity:0; transition:opacity .7s ease;
-  --bone:#e6e0cb; --drab:#1f261a; --plate:rgba(24,30,19,.86); --khaki:#a9a47d; --signal:#c4432c;
+  --bone:#e6e0cb; --drab:#1f261a; --plate:rgba(24,30,19,.58); --khaki:#a9a47d; --signal:#c4432c;
   font-family:var(--font-body),"Arial Narrow",Arial,sans-serif; color:var(--bone); text-shadow:0 1px 3px rgba(0,0,0,.7); }
 .jj-hud.on { opacity:1; }
+.jj-compass, .jj-notice, .jj-vitals, .jj-weapon, .jj-drive, .jj-tip { backdrop-filter:blur(10px) saturate(1.1); -webkit-backdrop-filter:blur(10px) saturate(1.1); }
 .jj-compass { position:absolute; left:50%; top:calc(16px + env(safe-area-inset-top,0px)); transform:translateX(-50%);
   padding:7px 14px; background:var(--plate); text-shadow:none; font:500 13px/1 var(--font-data),ui-monospace,monospace; letter-spacing:.14em; }
 .jj-notice { position:absolute; left:50%; top:calc(54px + env(safe-area-inset-top,0px)); transform:translateX(-50%); max-width:70vw; text-align:center; padding:8px 18px; background:var(--plate); text-shadow:none;
