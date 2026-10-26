@@ -121,10 +121,13 @@ Not needed at the current 1 km² world: after culling the scene renders in a few
 - **Manual recovery** (requested): the jeep never recovers by itself. Overturned or wrecked, it waits for `R` / RB. A knocked-out player stays down until they press `F` / `Y` (revive at 60 % health beside the jeep).
 - Tests: 176 pass (+53: items, inventory, vitals, player model, armory ownership, manual recovery).
 
+### Added after the first pass
+- **Quick-use** (`G` / d-pad left, on foot): picks the smallest healing item that covers the missing health, else the strongest (`pickConsumable`, tested); nothing is used when it would not help.
+- **Fall damage**: landing faster than 14 u/s (about a 5 m drop) costs 6 hp per extra u/s, through the shared damage rules with type `fall` (armor does not help). Normal jumps are unaffected (tested).
+- **Damage feedback**: a red screen-edge flash on every hit, a slow pulse below 30 % health, solid red while knocked out.
+
 ### Not done yet in Phase 2
 - Armor cannot be found or equipped (rules exist and are tested, no source in the world yet).
-- Fall damage and other hazards (the type exists).
-- Consumable hotkeys / quick-use; discard destroys the item (no world pickups until Phase 4).
-- Damage and low-health feedback beyond the existing thud, rumble and camera kick (no screen vignette or low-health alert yet).
+- Discard destroys the item (no world pickups until Phase 4).
 - Hunger (Phase 4/5), semantic input-action layer beyond the existing `JeepAction` queue, storage containers (Phase 5).
-- Gamepad navigation of the inventory is untested on real hardware.
+- Damage and inventory feedback was checked in tests and screenshots only; gamepad navigation and the low-health pulse are unverified on real hardware.

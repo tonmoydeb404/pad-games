@@ -1,7 +1,7 @@
 /** Explorer kinematics: stamina, velocity, jump, gravity, ground follow and push-out. */
 import type { JeepInputSnapshot } from "../../input";
 import { tickVitals } from "../../../player/state";
-import { ROLL_SPEED, FOOT_JUMP_V, FOOT_ACCEL_RATE, FOOT_BRAKE_RATE, PLAYER_RADIUS, FOOT_SKIN } from "../config/foot-constants";
+import { FALL_DAMAGE, FALL_SAFE_SPEED, ROLL_SPEED, FOOT_JUMP_V, FOOT_ACCEL_RATE, FOOT_BRAKE_RATE, PLAYER_RADIUS, FOOT_SKIN } from "../config/foot-constants";
 import { BOUND, GRAVITY } from "../config/world-constants";
 import type { JeepEngine } from "../jeep-engine";
 import type { FootIntent } from "./explorer-types";
@@ -52,6 +52,7 @@ export function moveExplorer(this: JeepEngine, dt: number, snap: JeepInputSnapsh
   const gh = this.groundHeight(f.pos.x, f.pos.z);
   if (f.pos.y <= gh) {
     if (!f.grounded && f.vy < -7) this.audio.thump(0.18);
+    if (!f.grounded && f.vy < -FALL_SAFE_SPEED) this.hurtPlayer(Math.round((-f.vy - FALL_SAFE_SPEED) * FALL_DAMAGE), 0, 0, "fall");
     f.pos.y = gh;
     f.vy = 0;
     f.grounded = true;

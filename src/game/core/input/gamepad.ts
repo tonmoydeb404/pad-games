@@ -91,6 +91,7 @@ export function applyGamepad(
   if (wasPressed(gp, 4, prev) || (gp.buttons[12]?.pressed && !prev[12]))
     actions.push("camera");
   if (gp.buttons[13]?.pressed && !prev[13]) actions.push("headlights");
+  if (gp.buttons[14]?.pressed && !prev[14]) actions.push("quickUse");
   if (wasPressed(gp, 3, prev)) actions.push("enter");
   if (wasPressed(gp, 2, prev)) actions.push("horn", "punch", "reload");
   if (wasPressed(gp, 1, prev)) actions.push("kick", "special");

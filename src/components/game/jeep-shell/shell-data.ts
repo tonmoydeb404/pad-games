@@ -33,6 +33,7 @@ export const PAD_CONTROLS: [string, string][] = [
   ["Y", "Enter / exit vehicle"],
   ["Right stick", "Look around"],
   ["RB", "Reset · warp to vehicle"],
+  ["Dpad ←", "Quick-use bandage / food (on foot)"],
   ["Back", "Inventory"],
   ["Start", "Pause"],
 ];
@@ -54,6 +55,7 @@ export const KEY_CONTROLS: [string, string][] = [
   ["V · H", "Undercam · headlights"],
   ["R", "Reset · warp to vehicle (no gun)"],
   ["I", "Inventory"],
+  ["G", "Quick-use bandage / food (on foot)"],
   ["M", "Mute"],
   ["P / Esc", "Pause"],
 ];

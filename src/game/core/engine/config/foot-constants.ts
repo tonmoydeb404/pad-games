@@ -17,6 +17,9 @@ export const FOOT_ACCEL_RATE = 9; // 1/s — exponential approach to the intent 
 export const FOOT_BRAKE_RATE = 14; // 1/s — stopping is snappier than starting
 export const FOOT_TURN = 14; // 1/s — how fast the explorer faces the move dir
 export const FOOT_JUMP_V = 8.2; // initial upward velocity (GRAVITY pulls back)
+/** Landing faster than this (u/s, ≈5 m drop) hurts; each u/s beyond it costs FALL_DAMAGE hp. */
+export const FALL_SAFE_SPEED = 14;
+export const FALL_DAMAGE = 6;
 export const PLAYER_RADIUS = 0.45;
 /** Melee moves: timeline length, the fraction of it where the hit lands, reach. */
 export const MELEE = {

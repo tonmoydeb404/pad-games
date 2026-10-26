@@ -65,6 +65,9 @@ export function handleActions(this: JeepEngine): void {
         break;
       case "pause": this.pause(); break;
       case "inventory": this.pause("inventory"); break;
+      case "quickUse":
+        if (this.onFoot) this.quickUse();
+        break;
       case "mute": {
         const m = this.audio.toggle();
         this.notify(m ? "Audio muted" : "Audio on");

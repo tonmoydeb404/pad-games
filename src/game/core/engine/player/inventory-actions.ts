@@ -1,5 +1,5 @@
 /** Inventory actions the menu calls. Rules live in player/state; this only applies their side effects to the world. */
-import { equip, getItemDef, ownedGunSlots, syncHeld, unequip, useItem } from "../../../player/state";
+import { equip, getItemDef, ownedGunSlots, pickConsumable, syncHeld, unequip, useItem } from "../../../player/state";
 import type { JeepEngine } from "../jeep-engine";
 
 /** Eat / apply a consumable. Returns a message for the menu. */
@@ -37,4 +37,14 @@ export function discardInventoryItem(this: JeepEngine, slot: number, qty: number
     this.onWeaponChanged();
   }
   return `Discarded ${getItemDef(stack.id).name.toLowerCase()}`;
+}
+
+/** G / d-pad left: use the most fitting consumable without opening the menu. */
+export function quickUse(this: JeepEngine): void {
+  const id = pickConsumable(this.player);
+  if (!id) {
+    this.notify(this.player.vitals.dead ? "You are down" : "Nothing to use");
+    return;
+  }
+  this.notify(`${getItemDef(id).name}: ${this.useInventoryItem(id)}`);
 }

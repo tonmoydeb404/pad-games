@@ -49,6 +49,8 @@ export function keyActions(k: string): JeepAction[] {
       return ["reset"];
     case "m":
       return ["mute"];
+    case "g":
+      return ["quickUse"];
     default:
       return [];
   }

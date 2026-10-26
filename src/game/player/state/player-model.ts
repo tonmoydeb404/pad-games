@@ -56,6 +56,22 @@ export function useItem(p: PlayerModel, itemId: string): UseResult {
   return { ok: true, healed };
 }
 
+/**
+ * The consumable a quick-use should reach for: the smallest healing item that covers the missing health,
+ * else the strongest one. Null when nothing carried would help.
+ */
+export function pickConsumable(p: PlayerModel): string | null {
+  const missing = p.vitals.cfg.maxHealth - p.vitals.health;
+  const staminaLow = p.vitals.stamina < p.vitals.cfg.maxStamina;
+  const options = [...new Set(p.inventory.slots.flatMap((s) => (s ? [s.id] : [])))]
+    .map((id) => getItemDef(id))
+    .filter((d) => d.category === "consumable" && d.use && ((d.use.heal && missing > 0) || (d.use.stamina && staminaLow)));
+  if (options.length === 0) return null;
+  const heal = (id: string): number => getItemDef(id).use?.heal ?? 0;
+  const covering = options.filter((d) => heal(d.id) >= missing).sort((a, b) => heal(a.id) - heal(b.id));
+  return (covering[0] ?? options.sort((a, b) => heal(b.id) - heal(a.id))[0]).id;
+}
+
 /** Puts an owned tool or weapon in hand. */
 export function equip(p: PlayerModel, itemId: string): boolean {
   const def = getItemDef(itemId);

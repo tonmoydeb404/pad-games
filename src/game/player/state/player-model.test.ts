@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { InventoryError } from "./inventory";
 import { applyDamage } from "./vitals";
-import { createPlayer, equip, ownedGunSlots, restorePlayer, serializePlayer, syncHeld, unequip, useItem } from "./player-model";
+import { createPlayer, equip, ownedGunSlots, pickConsumable, restorePlayer, serializePlayer, syncHeld, unequip, useItem } from "./player-model";
 
 describe("starter kit", () => {
   it("carries all five blasters and some bandages", () => {
@@ -34,6 +34,23 @@ describe("useItem", () => {
     applyDamage(p.vitals, 500);
     expect(useItem(p, "bandage").ok).toBe(false);
     expect(p.inventory.count("bandage")).toBe(3);
+  });
+});
+
+describe("pickConsumable", () => {
+  it("prefers the smallest item that covers the damage, else the strongest", () => {
+    const p = createPlayer("p", [["bandage", 2], ["cooked-meat", 1], ["fruit", 1]]);
+    applyDamage(p.vitals, 20);
+    expect(pickConsumable(p)).toBe("bandage"); // 25 covers 20, smaller than meat's 30
+    applyDamage(p.vitals, 60); // missing 80: nothing covers, take the strongest
+    expect(pickConsumable(p)).toBe("cooked-meat");
+  });
+  it("is null when nothing carried would help", () => {
+    const p = createPlayer();
+    expect(pickConsumable(p)).toBeNull(); // full health and stamina
+    applyDamage(p.vitals, 20);
+    p.inventory.remove("bandage", 3);
+    expect(pickConsumable(p)).toBeNull();
   });
 });
 

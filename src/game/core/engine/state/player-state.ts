@@ -57,6 +57,8 @@ export class PlayerState extends FeelState {
   /** Level of the jump input last frame (edge detection). */
   prevJump = false;
   // --- guns -----------------------------------------------------------------
+  /** 1 right after a hit, fading to 0: drives the red screen-edge flash. */
+  hurtFlash = 0;
   /** Blasters you may draw: only those you carry. */
   readonly armory = new Armory((slot) => ownedGunSlots(this.player).has(slot));
   gunModels: (GunModel | null)[] = [];

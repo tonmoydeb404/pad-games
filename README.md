@@ -60,6 +60,7 @@ window and **F4** copies a JSON report for the Phase 0 baseline.
 | **X** / K                | Horn                                    |
 | **RB** / R               | Reset jeep (also recover when overturned) |
 | **Back** / I             | Inventory (M mutes the audio)           |
+| **Dpad ←** / G           | Quick-use bandage or food (on foot)     |
 | **Start** / P / Esc      | Pause                                   |
 
 Gamepad menus: the start and pause overlays are fully pad-navigable

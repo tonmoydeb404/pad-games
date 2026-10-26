@@ -60,6 +60,13 @@ export function updateUI(this: JeepEngine, dt: number): void {
     this.el.hp.style.width = `${hp}%`;
     this.el.hp.style.background = hp > 30 ? "" : "#c4432c"; // bone, signal red when low
   }
+  if (this.el.hurt) {
+    // red screen edge: a flash on every hit, a slow pulse when health is low, solid while knocked out
+    const vit = this.player.vitals;
+    this.hurtFlash = Math.max(0, this.hurtFlash - 0.18);
+    const low = foot && !vit.dead && vit.health < vit.cfg.maxHealth * 0.3 ? 0.35 + 0.2 * Math.sin(this.time * 4) : 0;
+    this.el.hurt.style.opacity = String(vit.dead && foot ? 0.9 : Math.max(this.hurtFlash * 0.9, low));
+  }
   const yaw = this.onFoot ? this.foot.yaw : v.yaw;
   let deg = ((-yaw * 180) / Math.PI + 180) % 360;
   if (deg < 0) deg += 360;

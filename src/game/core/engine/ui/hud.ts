@@ -8,6 +8,7 @@ export function buildHud(this: JeepEngine): void {
     "beforeend",
     `<div class="jj-grade"></div><div class="jj-vig"></div>
     <div class="jj-hud" data-mode="foot">
+      <div class="jj-hurt" data-el="hurt"></div>
       <div class="jj-compass" data-el="compass">N</div>
       <div class="jj-notice" data-el="notice"></div>
       <div class="jj-vitals">

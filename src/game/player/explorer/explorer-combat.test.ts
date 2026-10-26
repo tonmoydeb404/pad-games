@@ -73,4 +73,34 @@ describe("on-foot explorer (combat)", () => {
     expect(distXZ(f.pos, e.v.pos)).toBeLessThan(3.7);
   });
 
+  it("a long fall hurts, a jump and a small step down do not", async () => {
+    const { e } = await walkingEngine();
+    const f = e.foot;
+    const v = e.player.vitals;
+    for (let i = 0; i < 40; i++) e.updateExplorer(1 / 60, snap());
+    f.vy = 8.2; // a normal jump
+    f.grounded = false;
+    for (let i = 0; i < 90; i++) e.updateExplorer(1 / 60, snap());
+    expect(v.health).toBe(100);
+    f.pos.y += 15; // ~15 m drop
+    f.grounded = false;
+    for (let i = 0; i < 180; i++) e.updateExplorer(1 / 60, snap());
+    expect(v.health).toBeLessThan(70);
+    expect(v.health).toBeGreaterThan(0);
+    expect(e.hurtFlash).toBeGreaterThan(0);
+  });
+
+  it("quick-use heals with the best bandage and says so when there is nothing to use", async () => {
+    const { e } = await walkingEngine();
+    const v = e.player.vitals;
+    const notes: string[] = [];
+    e.notify = (t: string) => void notes.push(t);
+    e.quickUse();
+    expect(notes.at(-1)).toBe("Nothing to use"); // full health
+    e.hurtPlayer(40, 1, 0);
+    e.quickUse();
+    expect(v.health).toBe(85);
+    expect(e.player.inventory.count("bandage")).toBe(2);
+    expect(notes.at(-1)).toContain("health");
+  });
 });

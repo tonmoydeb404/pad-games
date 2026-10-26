@@ -51,6 +51,8 @@ export function JeepCanvas({ quality, ...callbacks }: JeepCanvasCallbacks & { qu
         engine.destroy();
         return;
       }
+      // dev hook for scripted checks, only with ?profile in the URL
+      if (new URLSearchParams(window.location.search).has("profile")) (window as unknown as { __tintin?: JeepEngine }).__tintin = engine;
       cbRef.current.onEngine?.(engine);
     })();
 

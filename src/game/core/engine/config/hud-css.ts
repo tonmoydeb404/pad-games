@@ -18,6 +18,7 @@ export const HUD_CSS = `
   font-family:var(--font-body),"Arial Narrow",Arial,sans-serif; color:var(--bone); text-shadow:0 1px 3px rgba(0,0,0,.7); }
 .jj-hud.on { opacity:1; }
 .jj-compass, .jj-notice, .jj-vitals, .jj-weapon, .jj-drive, .jj-tip { backdrop-filter:blur(10px) saturate(1.1); -webkit-backdrop-filter:blur(10px) saturate(1.1); }
+.jj-hurt { position:absolute; inset:0; opacity:0; transition:opacity .2s; background:radial-gradient(ellipse at center, transparent 28%, rgba(196,67,44,.45) 62%, rgba(150,32,20,.85) 100%); }
 .jj-compass { position:absolute; left:50%; top:calc(16px + env(safe-area-inset-top,0px)); transform:translateX(-50%);
   padding:7px 14px; background:var(--plate); text-shadow:none; font:500 13px/1 var(--font-data),ui-monospace,monospace; letter-spacing:.14em; }
 .jj-notice { position:absolute; left:50%; top:calc(54px + env(safe-area-inset-top,0px)); transform:translateX(-50%); max-width:70vw; text-align:center; padding:8px 18px; background:var(--plate); text-shadow:none;

@@ -92,6 +92,7 @@ export function hurtPlayer(this: JeepEngine, dmg: number, nx: number, nz: number
   const f = this.foot;
   if (!this.onFoot || f.downT > 0 || f.invulnT > 0 || dmg <= 0) return;
   const hit = applyDamage(this.player.vitals, dmg, type);
+  this.hurtFlash = 1;
   f.vx += nx * 6.5;
   f.vz += nz * 6.5;
   if (f.act && f.act !== "roll") f.act = null; // staggered out of the swing
@@ -115,6 +116,7 @@ export function hurtPlayer(this: JeepEngine, dmg: number, nx: number, nz: number
 export function recoverFromKnockout(this: JeepEngine): void {
   this.foot.downT = 0;
   revive(this.player.vitals, 0.6);
+  this.hurtFlash = 0;
   this.spawnExplorerBesideCar();
   this.notify("You got up beside the jeep — 60% health");
 }

@@ -5,7 +5,7 @@
  * Gamepad mapping (standard layout) — driving:
  *   RT (7) / A (0)  throttle (analog)      LT (6)        brake · reverse
  *   Left stick X / dpad ← →         steer  B (1)        handbrake
- *   LB (4) · dpad ↑  cycle camera         dpad ↓        headlights
+ *   LB (4) · dpad ↑  cycle camera         dpad ↓        headlights · dpad ← quick-use (on foot)
  *   Y (3)            enter / exit vehicle  X (2)         horn
  *   RB (5)           reset vehicle         Back (8)      inventory · Start (9) pause
  *   Right stick      look / orbit camera
@@ -76,4 +76,5 @@ export type JeepAction =
   | "reset"
   | "pause"
   | "mute"
-  | "inventory";
+  | "inventory"
+  | "quickUse";
