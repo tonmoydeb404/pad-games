@@ -3,7 +3,7 @@
  * three's GLTFLoader (all these models are texture-free so no DOM/fetch is
  * needed) and report, per model:
  *   - natural height (skinned, bind pose) in meters
- *   - clip names — these feed src/jeep/animals.ts AnimalDef.clips
+ *   - clip names — these feed src/game/world/animals.ts AnimalDef.clips
  *   - whether a skeleton/skin exists
  *
  * Usage: node scripts/validate-animal-assets.mjs

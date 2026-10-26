@@ -16,7 +16,7 @@
  * reference it by relative URI, and the two kits ship DIFFERENT colormaps,
  * hence the `roads/` and `town/` subfolders). Every copied GLB is re-parsed
  * with three's GLTFLoader as a self-check, and the natural dimensions are
- * reported so `src/jeep/city.ts` placement constants stay honest.
+ * reported so `src/game/world/city/` placement constants stay honest.
  */
 import fs from "node:fs";
 import path from "node:path";

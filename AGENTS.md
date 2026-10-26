@@ -28,3 +28,14 @@ Retain qualifying friction even if it is later fixed or worked around; record th
 Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
 
 <!-- END:nextjs-agent-feedback -->
+
+## Project conventions (TinTin)
+
+TinTin is a single-game repo: an open-world jungle 4×4 in the browser. Next.js only hosts it; the engine lives outside React.
+
+- **File names are kebab-case** (`jeep-shell.tsx`, `use-gamepad-menu.ts`). Tests sit next to the code: `foo.test.ts`.
+- **Named exports only.** No `export default`, except where Next.js requires it (`app/**/page.tsx`, `layout.tsx`, etc.). Lazy components use `dynamic(() => import("./x").then((m) => m.X))`.
+- **200 lines max per file** (tests included). When a file would pass that, split it into a folder of focused modules and keep the old path working through `index.ts` (`world/animals.ts` → `world/animals/index.ts`). `index.ts` files only re-export. Consumers keep importing the folder, e.g. `./animals`.
+- **Modular pattern.** One responsibility per module; pure logic (math, data tables, builders) separate from stateful classes and from Three.js/Rapier wiring. Big classes are split into functions/helpers that take the state they need, not into deep inheritance.
+- **Layout:** `src/app` (routes), `src/components/game` (React overlays), `src/hooks`, `src/game/{core,physics,world,player,weapons}` (engine, no React). Update `README.md`'s layout section when you move things.
+- Before finishing: `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm test`, `pnpm build` must pass.

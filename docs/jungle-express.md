@@ -9,10 +9,10 @@ Marin access road.
 
 | Piece | File |
 | --- | --- |
-| Rail loop, consist motion, banking, smoke, collisions, audio state | `src/jeep/train.ts` (`RailPath`, `TrainSystem`, `findCrossings`, `obbCircleHit`) |
-| Headless tests (real GLBs + pure geometry) | `src/jeep/train.test.ts` |
-| Engine wiring: bed carve, spawn step, per-frame update, ram sting, kinematic bodies, crossing signs, wildlife keep-out | `src/jeep/engine.ts` (`buildRailway`, `trainRam`, the `RAIL_BED` blocks in `terrainHeight` / `buildTerrain` / `surfaceAt`) |
-| Chug / rumble / whistle audio stage | `src/jeep/audio.ts` (`setTrainState`, `trainWhistle`) |
+| Rail loop, consist motion, banking, smoke, collisions, audio state | `src/game/world/train/` (`rail-path.ts`, `train-system.ts`, `crossings.ts`, `collision.ts`; tuning in `constants.ts`) |
+| Headless tests (real GLBs + pure geometry) | `src/game/world/train/*.test.ts` |
+| Engine wiring: bed carve, spawn step, per-frame update, ram sting, kinematic bodies, crossing signs, wildlife keep-out | `src/game/core/engine.ts` (`buildRailway`, `trainRam`, the `RAIL_BED` blocks in `terrainHeight` / `buildTerrain` / `surfaceAt`) |
+| Chug / rumble / whistle audio stage | `src/game/core/audio.ts` (`setTrainState`, `trainWhistle`) |
 | GLB converter | `scripts/build-train-assets.mjs` (sources: extract the Train Pack zip into git-ignored `train-pack-sources/`) |
 | Assets + credit | `public/assets/jeep/train/*.glb`, `public/assets/jeep/CREDITS.md` |
 
@@ -50,14 +50,14 @@ Marin access road.
 - **Signs** — every crossing gets "CROSSING / express line" boards on both
   trail approaches, posted on the side away from the rails.
 
-## Geometry facts (asserted in `train.test.ts`)
+## Geometry facts (asserted in `train/rail-path.test.ts`)
 
 - Loop ≈ 1845u, 900 samples (~2u spacing), wraps seamlessly.
 - Crossings ≈ (158, 198), (12, 255), (−205, −154), (−61, −251).
 - Min trail clearance away from crossings ≈ 17u; min water clearance ≈ 30u.
 - Min curve radius 161u (the consist is 34.5u); max grade ≈ 3.2°.
 
-## Tuning knobs (all in `src/jeep/train.ts`)
+## Tuning knobs (all in `src/game/world/train/constants.ts`)
 
 `RAIL_RING` (dip angles/depth/width, base radius), `TRAIN_SCALE` 0.8,
 `TRAIN_SPEED` 12.5, `RAIL_BED`, `RAIL_BLEND`, `CAR_GAP` 0.9, `CHIMNEY`

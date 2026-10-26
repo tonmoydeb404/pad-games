@@ -1,6 +1,6 @@
 /**
  * Validation pass for public/assets/jeep/cars/*.glb: check the structure
- * src/jeep/cars.ts relies on — per vehicle:
+ * src/game/player/cars.ts relies on — per vehicle:
  *   - the four canonical wheel nodes exist (wheel-front-left/right,
  *     wheel-back-left/right)
  *   - the shared texture is referenced by the expected relative URI
@@ -18,7 +18,7 @@ const root = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), ".."
 const dir = path.join(root, "public/assets/jeep/cars");
 
 const CANONICAL = ["wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right"];
-const TARGET_LEN = 3.55; // jeep tub length — keep in sync with src/jeep/cars.ts
+const TARGET_LEN = 3.55; // jeep tub length — keep in sync with src/game/player/cars.ts
 const MIN_SCALE = 0.85;
 const MAX_SCALE = 2.5;
 
