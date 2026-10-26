@@ -97,7 +97,7 @@ export function updateWeaponHud(this: JeepEngine): void {
   const ar = this.armory;
   const g = ar.gun;
   const show = this.onFoot && !this.riding && !this.paused;
-  if (this.el.weapon) this.el.weapon.hidden = !show;
+  if (this.el.weapon) this.el.weapon.hidden = !show || !g; // fists need no card
   const xh = this.el.xhair;
   const out = show && !!g && this.foot.downT <= 0;
   if (xh) {

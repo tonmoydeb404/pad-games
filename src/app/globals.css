@@ -14,9 +14,14 @@
   --color-sand-deep: #8a5844;
   --color-ember: #ff9e5e;
   --color-teal-glow: #35d0ba;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-bricolage), var(--font-geist-sans);
+  --font-sans: var(--font-body), "Arial Narrow", Arial, sans-serif;
+  --font-mono: var(--font-data), ui-monospace, monospace;
+  --font-display: var(--font-stencil), Impact, "Arial Narrow", sans-serif;
+  --color-bone: #e6e0cb;
+  --color-drab: #1f261a;
+  --color-drab-2: #2b3424;
+  --color-khaki: #a9a47d;
+  --color-signal: #c4432c;
 }
 
 html,

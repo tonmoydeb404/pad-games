@@ -8,39 +8,27 @@ export function buildHud(this: JeepEngine): void {
     "beforeend",
     `<div class="jj-grade"></div><div class="jj-vig"></div>
     <div class="jj-hud" data-mode="foot">
-      <div class="jj-panel jj-compass" data-el="compass">N</div>
-      <div class="jj-panel jj-notice" data-el="notice"></div>
-      <div class="jj-panel jj-place"><span data-el="hSurf">Dirt</span><i></i><span><b data-el="hKills">0</b> wildlife felled</span></div>
+      <div class="jj-compass" data-el="compass">N</div>
+      <div class="jj-notice" data-el="notice"></div>
       <div class="jj-vitals">
-        <div class="jj-vital"><span class="jj-vl">HP</span><div class="jj-bwrap jj-hp"><i data-el="hp"></i></div></div>
-        <div class="jj-vital"><span class="jj-vl">STA</span><div class="jj-bwrap jj-sta"><i data-el="sta"></i></div></div>
-        <div class="jj-pad" data-el="pad">Keyboard</div>
+        <div class="jj-vital"><span>HP</span><div class="jj-bar"><i data-el="hp"></i></div></div>
+        <div class="jj-vital" data-foot><span>ST</span><div class="jj-bar jj-sta"><i data-el="sta"></i></div></div>
       </div>
-      <div class="jj-right">
-        <div class="jj-panel jj-weapon" data-el="weapon" hidden>
-          <div class="n" data-el="wName">Fists</div>
-          <div class="a" data-el="wAmmo"></div>
-          <div class="r"><i data-el="wReload"></i></div>
-          <div class="k" data-el="wKeys">1–5 draw a gun</div>
-        </div>
-        <div class="jj-panel jj-speedo">
-          <div class="jj-spd" data-el="spd">0</div>
-          <div class="jj-spdu" data-el="spdu">KM / H</div>
-          <div class="jj-gears">
-            <div data-g="P">P</div><div data-g="R">R</div><div data-g="N">N</div><div data-g="D" class="on">D</div>
-          </div>
-          <div class="jj-lamp"><span class="jj-dot" data-el="hLampDot"></span><span data-el="hLamp">Lights off</span></div>
-          <div class="jj-bars">
-            <div class="jj-bwrap jj-thr"><i data-el="thr"></i></div>
-            <div class="jj-bwrap jj-brk"><i data-el="brk"></i></div>
-          </div>
-        </div>
+      <div class="jj-weapon" data-el="weapon" hidden>
+        <div class="n" data-el="wName">Fists</div>
+        <div class="a" data-el="wAmmo"></div>
+        <div class="r"><i data-el="wReload"></i></div>
+        <div class="k" data-el="wKeys"></div>
       </div>
-      <div class="jj-panel jj-prompt" data-el="prompt" hidden>F — enter the jeep</div>
+      <div class="jj-drive">
+        <div class="jj-spd" data-el="spd">0</div>
+        <div class="jj-spdu"><span data-el="spdu">km/h</span><span class="jj-lamp"><i class="jj-dot" data-el="hLampDot"></i><span data-el="hLamp">Lights</span></span></div>
+      </div>
+      <div class="jj-prompt" data-el="prompt" hidden></div>
       <div class="jj-xhair" data-el="xhair" hidden><i></i><i></i><i></i><i></i><b data-el="hitm"></b></div>
       <div class="jj-scope" data-el="scope" hidden></div>
-      <div class="jj-panel jj-tip" data-el="tip"><b>WASD</b> move · <b>Shift</b> sprint · <b>Space</b> jump · <b>J</b> punch · <b>K</b> kick · <b>F</b> vehicle</div>
-      <div class="jj-panel jj-warn" data-el="warn">Jeep overturned — press <b>RB / R</b> to recover</div>
+      <div class="jj-tip" data-el="tip"></div>
+      <div class="jj-warn" data-el="warn">Jeep overturned. Press <b>RB / R</b> to recover</div>
     </div>
     <div class="jj-count" data-el="count"></div>
     <div class="jj-touch" data-el="touch" hidden>
@@ -57,7 +45,6 @@ export function buildHud(this: JeepEngine): void {
   for (const el of root.querySelectorAll<HTMLElement>("[data-el]")) {
     this.el[el.dataset.el as string] = el;
   }
-  this.gearEls = [...root.querySelectorAll<HTMLElement>(".jj-gears div")];
   this.updatePadChip(this.input.connected, this.input.padId);
   const touchBox = root.querySelector<HTMLElement>("[data-el=touch]");
   if (touchBox && this.input.touchActive) {

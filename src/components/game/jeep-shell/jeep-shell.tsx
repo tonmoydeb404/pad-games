@@ -25,7 +25,7 @@ export function JeepShell() {
   const { onEngine, onProgress, onReady, onPauseChange, onPadChange } = s.engineCallbacks;
 
   return (
-    <div className="relative h-dvh w-full select-none overflow-hidden bg-[#0a0f0a] text-[#f3efe6]">
+    <div className="relative h-dvh w-full select-none overflow-hidden bg-drab text-bone">
       <JeepCanvas
         quality={s.quality}
         onEngine={onEngine}
@@ -39,7 +39,6 @@ export function JeepShell() {
         <StartOverlay
           overlayRef={s.startOverlayRef}
           nav={s.nav}
-          charIdx={s.charIdx}
           ready={s.ready}
           progress={s.progress}
           padConnected={s.padConnected}

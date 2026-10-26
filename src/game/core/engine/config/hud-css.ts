@@ -13,56 +13,42 @@ export const HUD_CSS = `
   radial-gradient(65% 42% at 72% 10%, rgba(255,200,100,.18), transparent 60%),
   linear-gradient(180deg, rgba(255,230,170,.08), rgba(30,50,20,.08)); }
 .jj-vig { z-index:11; background:radial-gradient(110% 85% at 50% 50%, transparent 55%, rgba(4,8,2,.52) 100%); }
-.jj-hud { position:absolute; inset:0; z-index:20; pointer-events:none; opacity:0; transition:opacity .7s ease; --amber:#f2a33a; --moss:#8fd18a; --ink:#f3efe6; --dim:rgba(243,239,230,.58); }
+.jj-hud { position:absolute; inset:0; z-index:20; pointer-events:none; opacity:0; transition:opacity .7s ease;
+  --bone:#e6e0cb; --drab:#1f261a; --plate:rgba(24,30,19,.72); --khaki:#a9a47d; --signal:#c4432c;
+  font-family:var(--font-body),"Arial Narrow",Arial,sans-serif; color:var(--bone); text-shadow:0 1px 3px rgba(0,0,0,.7); }
 .jj-hud.on { opacity:1; }
-.jj-panel { background:linear-gradient(180deg,rgba(14,19,14,.62),rgba(9,13,9,.5)); border:1px solid rgba(255,255,255,.1); border-radius:12px;
-  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(0,0,0,.28);
-  color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-.jj-compass { position:absolute; left:50%; top:calc(18px + env(safe-area-inset-top,0px)); transform:translateX(-50%); padding:6px 18px; font-size:11.5px;
-  letter-spacing:.24em; font-weight:700; color:var(--dim); border-radius:999px; }
-.jj-notice { position:absolute; left:50%; top:calc(62px + env(safe-area-inset-top,0px)); transform:translate(-50%,-6px); padding:9px 22px; font-size:12.5px;
-  font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:0; transition:opacity .35s, transform .35s; border-radius:999px; border-color:rgba(242,163,58,.35); }
-.jj-notice.show { opacity:1; transform:translate(-50%,0); }
-.jj-place { position:absolute; left:calc(24px + env(safe-area-inset-left,0px)); top:calc(20px + env(safe-area-inset-top,0px)); padding:8px 14px; font-size:12px;
-  display:flex; align-items:center; gap:10px; color:var(--dim); letter-spacing:.04em; }
-.jj-place i { width:3px; height:3px; border-radius:50%; background:var(--dim); }
-.jj-place b { color:var(--ink); font-variant-numeric:tabular-nums; }
-.jj-vitals { position:absolute; left:calc(24px + env(safe-area-inset-left,0px)); bottom:calc(60px + env(safe-area-inset-bottom,0px)); width:min(300px,34vw); display:grid; gap:9px; }
-.jj-vital { display:flex; align-items:center; gap:10px; padding:0 2px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.55)); }
-.jj-vl { font-size:10px; font-weight:800; letter-spacing:.2em; color:var(--ink); width:30px; flex:none; opacity:.85; }
-.jj-bwrap { height:8px; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.14); border-radius:5px; overflow:hidden; flex:1; }
-.jj-bwrap i { display:block; height:100%; width:0%; border-radius:4px; transition:width .12s linear; }
-.jj-hp i { background:var(--moss); } .jj-sta i { background:#6cb6e8; }
-.jj-thr i { background:#78d18a; } .jj-brk i { background:#ef5b45; }
-.jj-hud[data-mode=car] .jj-vital:nth-child(2) { display:none; }
-.jj-pad { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:rgba(243,239,230,.4); padding-left:2px; }
-.jj-right { position:absolute; right:calc(24px + env(safe-area-inset-right,0px)); bottom:calc(24px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
-.jj-speedo { padding:14px 20px 12px; min-width:176px; text-align:right; }
-.jj-hud[data-mode=foot] .jj-speedo { display:none; }
-.jj-spd { font-size:46px; font-weight:800; line-height:.92; letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
-.jj-spdu { font-size:10.5px; letter-spacing:.24em; color:var(--dim); margin-top:5px; }
-.jj-gears { display:flex; gap:6px; justify-content:flex-end; margin-top:10px; }
-.jj-gears div { font-size:11px; font-weight:800; color:rgba(255,255,255,.26); width:20px; text-align:center; }
-.jj-gears div.on { color:var(--amber); }
-.jj-lamp { margin-top:9px; font-size:11px; color:var(--dim); letter-spacing:.06em; }
-.jj-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.2); margin-right:6px; vertical-align:middle; }
-.jj-dot.on { background:#ffd479; box-shadow:0 0 9px #ffd479; }
-.jj-bars { margin-top:10px; display:grid; gap:5px; }
-.jj-bars .jj-bwrap { height:5px; }
-.jj-weapon { padding:11px 16px; min-width:176px; text-align:right; border-color:rgba(242,163,58,.28); }
-.jj-weapon .n { font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); font-weight:700; }
-.jj-weapon .a { font-size:28px; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums; }
-.jj-weapon .a small { font-size:13px; font-weight:700; opacity:.55; }
-.jj-weapon .a.low { color:#ff8a70; }
-.jj-weapon .r { height:3px; margin-top:7px; border-radius:2px; background:rgba(255,255,255,.12); overflow:hidden; }
-.jj-weapon .r i { display:block; height:100%; width:0; background:var(--amber); }
-.jj-weapon .k { margin-top:6px; font-size:10.5px; color:rgba(243,239,230,.4); }
-.jj-tip { position:absolute; left:50%; bottom:26px; transform:translateX(-50%); padding:10px 20px; font-size:12.5px;
-  color:var(--dim); opacity:0; transition:opacity .5s; text-align:center; border-radius:999px; }
-.jj-tip.show { opacity:1; } .jj-tip b { color:var(--ink); }
-.jj-prompt { position:absolute; left:50%; bottom:92px; transform:translateX(-50%); padding:10px 22px; font-size:13.5px;
-  font-weight:800; letter-spacing:.06em; color:#fff6e4; border-radius:999px; border-color:rgba(242,163,58,.5);
-  background:rgba(44,28,8,.66); box-shadow:0 0 26px rgba(242,163,58,.25); }
+.jj-compass { position:absolute; left:50%; top:calc(16px + env(safe-area-inset-top,0px)); transform:translateX(-50%);
+  font:500 13px/1 var(--font-data),ui-monospace,monospace; letter-spacing:.14em; }
+.jj-notice { position:absolute; left:50%; top:calc(46px + env(safe-area-inset-top,0px)); transform:translateX(-50%); max-width:70vw; text-align:center;
+  font:700 22px/1.1 var(--font-stencil),Impact,sans-serif; letter-spacing:.06em; text-transform:uppercase; opacity:0; transition:opacity .35s; }
+.jj-notice.show { opacity:1; }
+.jj-vitals { position:absolute; left:calc(24px + env(safe-area-inset-left,0px)); bottom:calc(24px + env(safe-area-inset-bottom,0px)); width:min(240px,40vw);
+  display:grid; gap:6px; padding:10px 12px; background:var(--plate); text-shadow:none; }
+.jj-vital { display:flex; align-items:center; gap:10px; }
+.jj-vital span { font:700 15px/1 var(--font-stencil),Impact,sans-serif; letter-spacing:.08em; width:22px; flex:none; }
+.jj-bar { height:10px; flex:1; border:1px solid rgba(230,224,203,.55); padding:1px; }
+.jj-bar i { display:block; height:100%; width:0%; background:var(--bone); transition:width .12s linear; }
+.jj-sta i { background:var(--khaki); }
+.jj-weapon { position:absolute; right:calc(24px + env(safe-area-inset-right,0px)); bottom:calc(24px + env(safe-area-inset-bottom,0px)); min-width:150px; padding:10px 14px; background:var(--plate); text-align:right; text-shadow:none; }
+.jj-weapon .n { font:700 14px/1 var(--font-stencil),Impact,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--khaki); }
+.jj-weapon .a { margin-top:4px; font:700 40px/1 var(--font-stencil),Impact,sans-serif; font-variant-numeric:tabular-nums; }
+.jj-weapon .a small { font-size:18px; opacity:.6; }
+.jj-weapon .a.low { color:var(--signal); }
+.jj-weapon .r { height:2px; margin-top:6px; background:rgba(230,224,203,.2); }
+.jj-weapon .r i { display:block; height:100%; width:0; background:var(--bone); }
+.jj-weapon .k { margin-top:6px; font:400 11px/1.2 var(--font-data),ui-monospace,monospace; color:var(--khaki); }
+.jj-drive { position:absolute; right:calc(24px + env(safe-area-inset-right,0px)); bottom:calc(24px + env(safe-area-inset-bottom,0px)); padding:10px 16px; background:var(--plate); text-align:right; text-shadow:none; }
+.jj-hud[data-mode=foot] .jj-drive { display:none; }
+.jj-spd { font:800 56px/.9 var(--font-stencil),Impact,sans-serif; font-variant-numeric:tabular-nums; }
+.jj-spdu { display:flex; gap:14px; justify-content:space-between; margin-top:6px; font:400 11px/1 var(--font-data),ui-monospace,monospace; color:var(--khaki); }
+.jj-lamp { display:inline-flex; align-items:center; gap:6px; }
+.jj-dot { display:inline-block; width:7px; height:7px; background:rgba(230,224,203,.25); }
+.jj-dot.on { background:#ffd479; }
+.jj-prompt { position:absolute; left:50%; bottom:calc(72px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); padding:8px 16px;
+  background:var(--bone); color:var(--drab); text-shadow:none; font:600 15px/1 var(--font-body),Arial,sans-serif; letter-spacing:.02em; }
+.jj-tip { position:absolute; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); max-width:min(760px,70vw); text-align:center;
+  font:400 12px/1.4 var(--font-data),ui-monospace,monospace; color:var(--bone); opacity:0; transition:opacity .5s; }
+.jj-tip.show { opacity:1; } .jj-tip b { font-weight:500; color:#fff; }
 .jj-xhair { position:absolute; left:50%; top:50%; width:0; height:0; pointer-events:none; z-index:21; --s:10px; }
 .jj-xhair i { position:absolute; background:#fff; box-shadow:0 0 3px rgba(0,0,0,.85); opacity:0; transition:opacity .12s; }
 .jj-xhair::before { content:""; position:absolute; left:-2px; top:-2px; width:4px; height:4px; border-radius:50%; background:#fff; box-shadow:0 0 3px rgba(0,0,0,.9); }
@@ -83,8 +69,8 @@ export const HUD_CSS = `
 .jj-scope::before, .jj-scope::after { content:""; position:absolute; background:rgba(0,0,0,.7); }
 .jj-scope::before { left:50%; top:calc(50% - 30vmin); width:1px; height:60vmin; }
 .jj-scope::after { top:50%; left:calc(50% - 30vmin); height:1px; width:60vmin; }
-.jj-warn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); padding:14px 26px; font-size:15px;
-  font-weight:700; color:#ffd0c4; border-color:rgba(226,69,47,.5); background:rgba(60,12,6,.6); opacity:0; transition:opacity .3s; }
+.jj-warn { position:absolute; left:50%; top:42%; transform:translate(-50%,-50%); padding:12px 22px; font:600 17px/1.2 var(--font-body),Arial,sans-serif;
+  background:var(--signal); color:#fff; text-shadow:none; opacity:0; transition:opacity .3s; }
 .jj-warn.show { opacity:1; }
 .jj-count { position:absolute; left:50%; top:36%; transform:translate(-50%,-50%); z-index:25; pointer-events:none;
   font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;

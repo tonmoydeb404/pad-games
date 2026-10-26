@@ -48,31 +48,21 @@ export function updateUI(this: JeepEngine, dt: number): void {
   const foot = this.onFoot;
   const kmh = foot ? Math.hypot(this.foot.vx, this.foot.vz) * 3.6 : Math.abs(v.speed) * 3.6;
   if (this.el.spd) this.el.spd.textContent = String(Math.round(kmh));
-  let gear = "D";
-  if (v.speed < -0.15) gear = "R";
-  else if (Math.abs(v.speed) < 0.12 && v.throttle < 0.05) gear = v.handbrake || v.brake > 0.5 ? "P" : "N";
-  if (!foot) for (const g of this.gearEls) g.classList.toggle("on", g.dataset.g === gear);
   this.root?.querySelector<HTMLElement>(".jj-hud")?.setAttribute("data-mode", foot ? "foot" : "car");
-  if (this.el.thr) this.el.thr.style.width = `${v.throttle * 100}%`;
   if (this.el.sta) {
     this.el.sta.style.width = `${this.foot.stamina}%`;
-    this.el.sta.style.background = this.foot.winded ? "#e5484d" : "";
+    this.el.sta.style.background = this.foot.winded ? "#c4432c" : "";
   }
-  if (this.el.brk) this.el.brk.style.width = `${v.brake * 100}%`;
-  // HP bar: always visible, full width = healthy, colour tracks the level
+  // HP bar: full width = healthy
   if (this.el.hp) {
     const hp = foot ? this.foot.health : this.jeepHealth;
     this.el.hp.style.width = `${hp}%`;
-    this.el.hp.style.background = hp > 50 ? "#78d18a" : hp > 25 ? "#e8b04a" : "#e5484d";
-  }
-  if (this.el.hSurf) {
-    const surf = this.onFoot ? this.surfaceAt(this.foot.pos.x, this.foot.pos.z) : v.surface;
-    this.el.hSurf.textContent = surf.charAt(0).toUpperCase() + surf.slice(1);
+    this.el.hp.style.background = hp > 30 ? "" : "#c4432c"; // bone, signal red when low
   }
   const yaw = this.onFoot ? this.foot.yaw : v.yaw;
   let deg = ((-yaw * 180) / Math.PI + 180) % 360;
   if (deg < 0) deg += 360;
-  if (this.el.compass) this.el.compass.textContent = `${DIRS[Math.round(deg / 45) % 8]} · ${Math.round(deg)}°`;
+  if (this.el.compass) this.el.compass.textContent = `${DIRS[Math.round(deg / 45) % 8]} ${String(Math.round(deg)).padStart(3, "0")}°`;
   if (this.el.warn) this.el.warn.classList.toggle("show", !foot && v.overturnT > 1.4);
   this.updateWeaponHud();
   this.updatePrompt();
@@ -83,7 +73,7 @@ export function toggleHeadlights(this: JeepEngine): void {
   for (const l of this.headlights) l.intensity = this.headlightsOn ? 115 : 0;
   for (const m of this.headlampMeshes) (m.material as THREE.MeshStandardMaterial).emissiveIntensity = this.headlightsOn ? 2.6 : 0.15;
   for (const m of this.roofLamps) (m.material as THREE.MeshStandardMaterial).emissiveIntensity = this.headlightsOn ? 2.2 : 0.12;
-  if (this.el.hLamp) this.el.hLamp.textContent = this.headlightsOn ? "Lights on" : "Lights off";
+  if (this.el.hLamp) this.el.hLamp.textContent = this.headlightsOn ? "Lights on" : "Lights";
   if (this.el.hLampDot) this.el.hLampDot.classList.toggle("on", this.headlightsOn);
   this.notify(this.headlightsOn ? "Headlights on" : "Headlights off");
 }

@@ -40,7 +40,6 @@ export class RuntimeState extends PlayerState {
   root: HTMLDivElement | null = null;
   styleEl: HTMLStyleElement | null = null;
   el: Record<string, HTMLElement | null> = {};
-  gearEls: HTMLElement[] = [];
   readonly input = new JeepInput();
   readonly audio = new JeepAudio();
   readonly tmpInfo = { dist: 999, y: 0, i: 0, t: 0, s: 0 };

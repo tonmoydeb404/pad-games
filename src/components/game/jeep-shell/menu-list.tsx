@@ -2,16 +2,15 @@ import { padMenuRumble } from "@/hooks/use-gamepad-menu";
 import type { MenuNav } from "./menu-types";
 
 /** Vertical gamepad/keyboard menu. Buttons carry data-mb so the hook can focus them. */
-export function MenuList({ nav, size = "lg" }: { nav: MenuNav; size?: "lg" | "md" }) {
+export function MenuList({ nav }: { nav: MenuNav }) {
   const { items, focusIdx, setFocusIdx, activate } = nav;
-  const text = size === "lg" ? "text-[clamp(20px,2.3vw,34px)]" : "text-[clamp(18px,1.6vw,24px)]";
   return (
-    <ul className="flex w-[min(30rem,86vw)] flex-col gap-1.5" role="menu">
+    <ul className="flex flex-col border-t border-bone/20" role="menu">
       {items.map((it, i) => {
-        const on = focusIdx === i;
+        const on = focusIdx === i && !it.disabled;
         const select = it.value !== undefined;
         return (
-          <li key={it.id} role="none">
+          <li key={it.id} role="none" className="border-b border-bone/20">
             <button
               role="menuitem"
               data-mb={i}
@@ -22,25 +21,19 @@ export function MenuList({ nav, size = "lg" }: { nav: MenuNav; size?: "lg" | "md
                 activate(it.id);
                 padMenuRumble("confirm");
               }}
-              className={`group relative flex w-full items-center gap-4 rounded-lg py-2.5 pr-5 pl-6 text-left font-display font-bold uppercase tracking-[0.06em] outline-none transition-all duration-200 ${text} ${
-                it.disabled ? "cursor-progress text-white/30" : on ? "bg-white/[0.07] text-white" : "text-white/55 hover:text-white"
+              className={`flex h-[3.4rem] w-full items-center justify-between px-4 text-left font-display text-[2rem] font-bold tracking-[0.04em] uppercase outline-none ${
+                it.disabled ? "text-bone/35" : on ? "bg-bone text-drab" : "text-bone"
               }`}
             >
-              <span
-                aria-hidden
-                className={`absolute top-1/2 left-0 h-[70%] w-1 -translate-y-1/2 rounded-full transition-all duration-200 ${
-                  on && !it.disabled ? "bg-[#f2a33a] shadow-[0_0_14px_#f2a33a]" : "scale-y-0 bg-transparent"
-                }`}
-              />
-              <span className={it.primary && on && !it.disabled ? "text-[#f2a33a]" : ""}>{it.label}</span>
+              <span>{it.label}</span>
               {select && (
-                <span className="ml-auto flex items-center gap-3 font-mono text-[0.5em] tracking-[0.12em] text-[#f2a33a]">
-                  <Chevron dir={-1} onStep={() => activate(it.id, -1)} />
-                  <span className="min-w-[5.5em] text-center text-white/90">{it.value}</span>
-                  <Chevron dir={1} onStep={() => activate(it.id, 1)} />
+                <span className="flex items-center gap-2 font-mono text-[13px] font-medium tracking-[0.08em]">
+                  <Step dir={-1} onStep={() => activate(it.id, -1)} />
+                  <span className="min-w-[6.5em] text-center">{it.value}</span>
+                  <Step dir={1} onStep={() => activate(it.id, 1)} />
                 </span>
               )}
-              {it.hint && <span className="ml-auto font-mono text-[0.45em] tracking-[0.16em] text-white/45">{it.hint}</span>}
+              {it.hint && <span className="font-mono text-[13px] tracking-[0.1em]">{it.hint}</span>}
             </button>
           </li>
         );
@@ -49,7 +42,7 @@ export function MenuList({ nav, size = "lg" }: { nav: MenuNav; size?: "lg" | "md
   );
 }
 
-function Chevron({ dir, onStep }: { dir: 1 | -1; onStep: () => void }) {
+function Step({ dir, onStep }: { dir: 1 | -1; onStep: () => void }) {
   return (
     <span
       role="button"
@@ -59,7 +52,7 @@ function Chevron({ dir, onStep }: { dir: 1 | -1; onStep: () => void }) {
         onStep();
         padMenuRumble("move");
       }}
-      className="cursor-pointer px-1 text-white/50 transition hover:text-[#f2a33a]"
+      className="cursor-pointer px-1.5 text-lg leading-none opacity-60 hover:opacity-100"
     >
       {dir < 0 ? "‹" : "›"}
     </span>

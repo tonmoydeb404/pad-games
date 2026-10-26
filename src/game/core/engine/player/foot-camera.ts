@@ -67,10 +67,6 @@ export function applyModeHud(this: JeepEngine): void {
   const foot = this.onFoot;
   for (const el of root.querySelectorAll<HTMLElement>("[data-car]")) el.hidden = foot;
   for (const el of root.querySelectorAll<HTMLElement>("[data-foot]")) el.hidden = !foot;
-  const gears = root.querySelector<HTMLElement>(".jj-gears");
-  if (gears) gears.hidden = foot;
-  if (this.el.brkRow) this.el.brkRow.hidden = foot;
-  if (this.el.spdu) this.el.spdu.textContent = foot ? "KM / H · ON FOOT" : "KM / H";
   if (this.el.warn && foot) this.el.warn.classList.remove("show");
 }
 

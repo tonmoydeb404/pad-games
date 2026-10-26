@@ -58,7 +58,6 @@ export async function buildAnimals(this: JeepEngine): Promise<void> {
     },
     onKill: (name, points) => {
       this.kills++;
-      if (this.el.hKills) this.el.hKills.textContent = String(this.kills);
       this.notify(`${name} down! +${points}`);
     },
     onHeavyImpact: (approach) => {
