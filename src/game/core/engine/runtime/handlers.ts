@@ -1,4 +1,5 @@
 /** DOM event handlers (bound in the constructor). */
+import type * as THREE from "three";
 import { clamp } from "../../noise";
 import { Profiler } from "../../profiler";
 import { MODES } from "../config/foot-constants";
@@ -21,13 +22,22 @@ export function onPauseKey(this: JeepEngine, e: KeyboardEvent): void {
   if ((k === "p" || k === "escape") && this.started) this.togglePause();
 }
 
+const countNodes = (root: THREE.Object3D | null): number => {
+  let n = 0;
+  root?.traverse(() => n++);
+  return n;
+};
+
 /** F3 shows/hides the dev profiler (Shift+F3 clears it), F4 copies its report. Dev builds or `?profile` only. */
 export function onProfilerKey(this: JeepEngine, k: string, shift: boolean): void {
   if (process.env.NODE_ENV === "production" && !new URLSearchParams(location.search).has("profile")) return;
   if (!this.renderer) return;
   if (!this.profiler) {
     this.profiler = new Profiler(this.container, this.renderer, {
-      counts: () => ({ animals: this.animals?.count ?? 0, sceneObjects: this.scene?.children.length ?? 0 }),
+      scene: () => this.scene,
+      counts: () => ({ animals: this.animals?.count ?? 0, sceneObjects: this.scene?.children.length ?? 0,
+        sceneNodes: countNodes(this.scene),
+        animalsAwake: this.animals?.awake ?? 0 }),
     });
     this.profilerOn = true;
     return;

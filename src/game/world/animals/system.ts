@@ -57,6 +57,11 @@ export class AnimalSystem {
     return this.ctx.actors.length;
   }
 
+  /** Actors currently awake (not hidden by distance). */
+  get awake(): number {
+    return this.ctx.actors.filter((a) => a.root.visible).length;
+  }
+
   /** How many animals of a species made it into the world. */
   countOf(file: string): number {
     return this.ctx.actors.filter((a) => a.def.file === file).length;

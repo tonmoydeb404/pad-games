@@ -47,7 +47,7 @@ export const HUD_CSS = `
 .jj-dot.on { background:#ffd479; }
 .jj-prompt { position:absolute; left:50%; bottom:calc(72px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); padding:8px 16px;
   background:var(--bone); color:var(--drab); text-shadow:none; font:600 15px/1 var(--font-body),Arial,sans-serif; letter-spacing:.02em; }
-.jj-tip { position:absolute; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); max-width:min(760px,70vw); text-align:center; padding:8px 16px; background:var(--plate); text-shadow:none;
+.jj-tip { position:absolute; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); max-width:min(1000px,84vw); text-align:center; padding:8px 16px; background:var(--plate); text-shadow:none;
   font:400 12px/1.4 var(--font-data),ui-monospace,monospace; color:var(--bone); opacity:0; transition:opacity .5s; }
 .jj-tip.show { opacity:1; } .jj-tip b { font-weight:500; color:#fff; }
 .jj-xhair { position:absolute; left:50%; top:50%; width:0; height:0; pointer-events:none; z-index:21; --s:10px; }

@@ -10,6 +10,7 @@ import type { JeepProps } from "../../assets";
 import { type JeepQuality, QUALITY } from "../config/quality";
 import { SAMPLES } from "../config/world-constants";
 import type { Blocker } from "../types";
+import { InstanceLod } from "../world/instance-lod";
 
 export class WorldState {
   container!: HTMLElement;
@@ -30,6 +31,8 @@ export class WorldState {
   onPauseChange?: (paused: boolean) => void;
   onPadChange?: (connected: boolean, id: string) => void;
   // three core
+  /** Distance culling for instanced scenery (see world/instance-lod.ts). */
+  readonly lod = new InstanceLod();
   renderer: THREE.WebGLRenderer | null = null;
   scene: THREE.Scene | null = null;
   camera: THREE.PerspectiveCamera | null = null;

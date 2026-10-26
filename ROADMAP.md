@@ -6,7 +6,7 @@ The full spec lives in `PLAN.md`; this file tracks what is actually true of the 
 | Phase | Status |
 | --- | --- |
 | 0 — Audit & baseline | **VERIFIED COMPLETE** (2026-10-26) |
-| 1 — Performance, partitioning, streaming | NOT STARTED |
+| 1 — Performance, partitioning, streaming | IN PROGRESS (render cost cut; streaming decision below) |
 | 2 — Player state, inventory, equipment | NOT STARTED |
 | 3 — Wildlife, taming, riding | NOT STARTED (animals + riding exist as prototype) |
 | 4–11 | NOT STARTED |
@@ -71,3 +71,37 @@ Production build (`next start`), headless Chrome 155 with Metal/ANGLE on the dev
 - Architecture report, inventory, baseline, risks, Phase 1 plan: this section.
 - Dev profiler: `src/game/core/profiler/` (F3 toggle, Shift+F3 reset, F4 copy JSON). Dev builds or `?profile`.
 - Scope cleanups made along the way: only the jeep remains (other cars removed); title screen, pause menu and HUD redesigned.
+
+## Phase 1 — progress
+
+Method: profile first (`?profile`, F4 now also lists the biggest triangle contributors and node counts), then fix the measured cost.
+
+### Findings
+- Every vegetation `InstancedMesh` carried the whole world's instances and a world-sized bounding sphere, so three.js could never cull it. All ~4,500 plants were drawn in the main pass and again in the shadow pass, although the shadow map only covers ±68 m around the player.
+- 99 animals were all scene-graph-updated every frame; animals past 220 m were already asleep (no brain, no mixer) but still cost bone matrix updates and culling.
+- Textures plateau at ~530 over a 2-minute drive: no leak. The 526 → 612 climb seen earlier was lazy first-use uploads.
+- Physics streaming (3×3 Rapier heightfield chunks) already works and is not a bottleneck.
+
+### Changes
+1. `world/instance-lod.ts`: instances kept nearest-first; main pass draws those within 460 m (fog hides >85% beyond that), shadow pass only those within 140 m. Re-sorted when the player has moved 6 m. Colours move with their instances; 4 unit tests.
+2. `animals/dormant.ts`: animals beyond 300 m are hidden and skipped by the matrix update (wake at 280 m so the boundary doesn't flicker); 3 unit tests.
+
+### Measured (same scenarios, production build, headless Chrome, 1920×1080, quality high)
+| Scenario | Triangles before → after | Draw calls before → after | JS per frame before → after |
+| --- | --- | --- | --- |
+| Idle on foot | 11.0 M → 5.1 M | 942 → 854 | 16.5 → 8.3 ms |
+| Sprinting | 11.0 M → 4.7 M | 412 → 376 | 11.5 → 7.1 ms |
+| Riding / driving | 10.9 M → 3.4 M | 393 → 245 | 10.0 → 3.7 ms |
+
+Triangle and draw-call counts are exact. Frame times were taken at different machine loads (the "before" run was under heavy unrelated CPU load), so JS-per-frame is indicative only. After: 59-60 FPS (display-capped), 0-4 frames over 33 ms per 600.
+
+Visual check against the earlier screenshots: no visible change at spawn; no pop-in noticed at the 460 m / 300 m radii (not tested at the far edge of the map or at speed).
+
+### Decision on chunked streaming
+Not needed at the current 1 km² world: after culling the scene renders in a few ms and memory is ~110-190 MB. A chunk/region abstraction and stable entity IDs become worthwhile when the world grows or persistence (Phase 7) starts; they are deferred to then rather than built speculatively.
+
+### Remaining for Phase 1
+- Lazy-load deep-jungle animal models (25 MB up front) and measure load time.
+- Check pop-in at map edges and at driving speed; tune `VIEW_R` / `HIDE_DIST`.
+- Terrain mesh (231 k triangles, 340² grid) could use distance-based detail.
+- Re-baseline on a second machine / the user's gamepad session.

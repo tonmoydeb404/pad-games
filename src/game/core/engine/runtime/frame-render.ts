@@ -55,6 +55,7 @@ export function renderFrame(this: JeepEngine): void {
   const focusX = this.onFoot ? this.foot.pos.x : this.renderPos.x;
   const focusY = this.onFoot ? this.foot.pos.y : this.renderPos.y;
   const focusZ = this.onFoot ? this.foot.pos.z : this.renderPos.z;
+  this.lod.update(focusX, focusZ);
   if (this.sunLight) {
     this.sunLight.position.set(focusX + 95, focusY + 105, focusZ - 72);
     this.sunLight.target.position.set(focusX, focusY, focusZ);

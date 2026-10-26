@@ -2,6 +2,8 @@
 export const BASE = "/assets/jeep/animals";
 /** World-units² beyond which an animal's brain and mixer sleep. */
 export const THINK_DIST = 220;
+/** Beyond this an animal is also hidden and skipped by the per-frame matrix update. */
+export const HIDE_DIST = 300;
 export const CALM_DIST = 58;
 export const GRAVITY = 22;
 /** Impact speed (u/s) that kills. Heavy animals need a proper wallop. */

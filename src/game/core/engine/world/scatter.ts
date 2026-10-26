@@ -35,6 +35,8 @@ export function scatterPack(
     im.instanceMatrix.needsUpdate = true;
     if (im.instanceColor) im.instanceColor.needsUpdate = true;
     im.computeBoundingSphere();
+    im.name = `veg:${mat.name || "part"}`;
+    this.lod.register(im);
 
     const wantsShadow = (opts.cast ?? true) && this.Q.shadowsOn;
     if (wantsShadow) {

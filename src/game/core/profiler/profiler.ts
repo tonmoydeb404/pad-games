@@ -1,10 +1,12 @@
 /** Dev-only profiler overlay (F3 toggles, F4 copies a JSON report). */
 import type * as THREE from "three";
 import { FrameStats } from "./frame-stats";
+import { sceneBreakdown, type SceneEntry } from "./scene-stats";
 
 interface Extras {
   /** extra scene counters, e.g. { animals: 120 } */
   counts: () => Record<string, number>;
+  scene: () => THREE.Object3D | null;
 }
 
 export interface ProfileReport {
@@ -15,6 +17,8 @@ export interface ProfileReport {
   render: { drawCalls: number; triangles: number; geometries: number; textures: number };
   heapMB: number | null;
   counts: Record<string, number>;
+  /** biggest triangle contributors, per pass */
+  topObjects: SceneEntry[];
 }
 
 export class Profiler {
@@ -78,6 +82,7 @@ export class Profiler {
       render: this.render,
       heapMB: heap ? Math.round(heap.usedJSHeapSize / 1048576) : null,
       counts: this.extras.counts(),
+      topObjects: this.extras.scene() ? sceneBreakdown(this.extras.scene()!).slice(0, 12) : [],
     };
   }
 

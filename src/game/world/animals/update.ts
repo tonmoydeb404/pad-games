@@ -4,6 +4,7 @@ import { type Contact, jeepCollision } from "./collision";
 import { RESPAWN_MIN, THINK_DIST } from "./constants";
 import { updateRagdoll } from "./death";
 import { updateDecals } from "./decals";
+import { setDormant } from "./dormant";
 import { updateBar } from "./health-bar";
 import { steerAndMove } from "./motion";
 import { respawn } from "./spawn";
@@ -79,7 +80,11 @@ function updateActor(
     return false;
   }
 
-  if (dist > THINK_DIST) return false; // asleep — no mixer, no brain
+  if (dist > THINK_DIST) {
+    setDormant(a, dist); // asleep — no mixer, no brain (and hidden when far)
+    return false;
+  }
+  setDormant(a, 0);
   a.mixer.update(dt);
   if (jeepCollision(ctx, a, jeep, c)) return false;
   return true;
